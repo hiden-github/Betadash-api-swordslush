@@ -2326,8 +2326,8 @@ async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', body
       try {
         const settings = {
           name: "Yazky's Api",
-          version: "2.0",
-          description: "Simple and Easy-to-Use API Documentation",
+          version: "v2.0",
+          description: "𝖲𝗂𝗆𝗉𝗅𝖾 𝖺𝗇𝖽 𝖤𝖺𝗌𝗒-𝗍𝗈-𝖴𝗌𝖾 𝖠𝖯𝖨 𝖣𝗈𝖼𝗎𝗆𝖾𝗇𝗍𝖺𝗍𝗂𝗈𝗇",
           header: {
             status: "Online!",
             imageSrc: [
@@ -2353,10 +2353,14 @@ async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', body
             }
           ],
           notifications: [
-            {
+             {
               title: "Welcome to API Dashboard",
               message: "Explore our APIs and integrate them into your projects."
-            }
+            },
+             {
+             title: "New Feature",
+             message: "added canvas by using userid or text etc..."
+           }
           ]
         };
 
@@ -2461,7 +2465,7 @@ async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', body
         { url: "/mark?text=", name: "𖣘 Mark Zuckerberg", description: "Returns a message based on the text input." },
         { url: "/hack?name=&uid=", name: "𖣘 Hack", description: "Simulates a hack operation for a user." },
         { url: "/lexi?text=", name: "𖣘 Lexi", description: "Retrieves information based on the specified text." },
-        { url: "/trump?text=", name: "𖣘 Trump", description: "Returns a response based on the text input." },
+        { url: "/trump-post?text=", name: "𖣘 Trump Post", description: "Returns a response based on the text input." },
         { url: "/jessica?text=", name: "𖣘 Jessica", description: "Provides a response based on the given text." },
         { url: "/bbm?text1=&text2=", name: "𖣘 BBM", description: "Processes two text inputs for a combined result." },
         { url: "/phub?text=&name=&id=", name: "𖣘 PHub", description: "Processes text and user information." },
