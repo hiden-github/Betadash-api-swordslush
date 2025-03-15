@@ -16,7 +16,8 @@
     "axios": "^1.7.7",
     "canvas": "^2.11.2",
     "cheerio": "^1.0.0",
-        "discord-card-canvas": "^1.4.4",
+    "cors": "^2.8.5",
+    "discord-card-canvas": "^1.4.4",
     "discord-image-generation": "^1.4.25",
     "express": "^4.21.0",
     "form-data": "^4.0.0",
@@ -31,6 +32,7 @@
     "request": "^2.88.2",
     "scdl-core": "^1.1.0",
     "socket.io": "^4.8.0",
+    "split2": "^4.2.0",
     "url": "^0.11.4",
     "uuid": "^11.1.0"
   }

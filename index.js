@@ -10462,6 +10462,768 @@ data.append('type', '1');
   }
 });
 
+
+app.get("/instadl", async (req, res) => {
+  const url = req.query.url;
+  const msg = {
+    paramurl: {
+      status: false,
+      Author: "yazky",
+      message: "Missing Parameter URL!",
+    },
+    nodata: {
+      status: false,
+      Author: "yazky",
+      message: "Data not found!",
+    },
+  };
+
+  if (!url) return res.json(msg.paramurl);
+
+  try {
+    const data = await igdl(url);
+    if (!data.length) {
+      return res.json(msg.nodata);
+    }
+
+    const videoItem = data.find(item => item.type === "video");
+    if (videoItem) {
+      const videoResponse = await axios.get(videoItem.url, { responseType: 'stream' });
+      res.setHeader('Content-Type', 'video/mp4');
+      videoResponse.data.pipe(res);
+    } else {
+      res.json({
+        status: true,
+        Author: "yazky",
+        result: data,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+async function igdl(url) {
+  try {
+    const initialResponse = await axios("https://indown.io/", {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+      },
+    });
+
+    const _$ = cheerio.load(initialResponse.data);
+    const _token = _$('input[name="_token"]').val();
+    const referer = "https://indown.io";
+    const locale = "en";
+    const p = "2001:4451:87ff:3300:d8f6:cbf8:d85f:a5c3"; // This may need to be dynamic as well
+
+    const { data } = await axios.post(
+      "https://indown.io/download",
+      new URLSearchParams({
+        link: url,
+        referer,
+        locale,
+        p,
+        _token,
+      }),
+      {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+          "Content-Type": "application/x-www-form-urlencoded",
+          cookie: initialResponse.headers["set-cookie"].join("; "),
+        },
+      }
+    );
+
+    const $ = cheerio.load(data);
+    const result = [];
+    const __$ = cheerio.load($("#result").html());
+    __$("video").each(function () {
+      const $$ = $(this);
+      result.push({
+        type: "video",
+        thumbnail: $$.attr("poster"),
+        url: $$.find("source").attr("src"),
+      });
+    });
+    __$("img").each(function () {
+      const $$ = $(this);
+      result.push({
+        type: "image",
+        url: $$.attr("src"),
+      });
+    });
+
+    return result;
+  } catch (error) {
+    throw new Error(`Error fetching data: ${error.message}`);
+  }
+}
+
+
+
+
+
+function generateRandomAddress() {
+  const characters = 'abcdef0123456789';
+  let address = '0x';
+  for (let i = 0; i < 40; i++) {
+    address += characters[Math.floor(Math.random() * characters.length)];
+  }
+  return address;
+}
+
+app.get('/lgate', async (req, res) => {
+  try {
+    const { search } = req.query;
+
+    if (!search) {
+      return res.status(400).json({ error: "Search query is required" });
+    }
+
+    const address = generateRandomAddress();
+    const data = {
+      address: address,
+      word: search
+    };
+
+    const config = {
+      method: 'POST',
+      url: 'https://lgate.glitternode.ru/v1/searchV2',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'Origin': 'https://liber3.eth.limo',
+        'Referer': 'https://liber3.eth.limo',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_1_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/134.0.6998.33 Mobile/15E148 Safari/604.1'
+      },
+      data: data
+    };
+    const response = await axios.request(config);
+    res.send(response.data);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
+
+
+
+
+
+app.get('/scdl', async (req, res) => {
+  try {
+    const { url } = req.query;
+
+    if (!url) {
+      return res.status(400).json({ error: "URL is missing" });
+    }
+
+    const initialResponse = await axios.get('https://soundcloudmp3.org/id');
+    const $ = cheerio.load(initialResponse.data);
+    const token = $('form#conversionForm > input[type=hidden]').attr('value');
+
+    const cookies = initialResponse.headers['set-cookie'] || [];
+
+    const conversionResponse = await axios.post(
+      'https://soundcloudmp3.org/converter',
+      new URLSearchParams({
+        _token: token,
+        url: url
+      }).toString(),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36',
+          'Cookie': cookies.join('; ')
+        }
+      }
+    );
+
+    const $get = cheerio.load(conversionResponse.data);
+    const result = {
+      title: $get('#preview > div:nth-child(3) > p:nth-child(2)').text().replace('Title:', '').trim(),
+      duration: $get('#preview > div:nth-child(3) > p:nth-child(3)').text().replace(/Length:|Minutes/g, '').trim(),
+      quality: $get('#preview > div:nth-child(3) > p:nth-child(4)').text().replace('Quality:', '').trim(),
+      thumbnail: $get('#preview > div:nth-child(3) > img').attr('src'),
+      download: $get('#download-btn').attr('href')
+    };
+
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error});
+  }
+});
+
+
+
+
+app.get('/capcutdl', async (req, res) => {
+  const { link } = req.query;
+
+  if (!link) {
+    return res.status(400).json({ error: 'Missing link query parameter' });
+  }
+
+  const data = `url=${encodeURIComponent(link)}&token=5140785f7b1feb8c28bf7733a801877eaf9c365fe6f8f8961a680be3e33f93a8&hash=aHR0cHM6Ly93d3cuY2FwY3V0LmNvbS90L1pzOHJMZUxzbi8=1035YWlvLWRs`;
+
+  const config = {
+    method: 'POST',
+    url: 'https://snapsave.cc/wp-json/aio-dl/video-data/',
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'sec-ch-ua-platform': '"Android"',
+      'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+      'dnt': '1',
+      'sec-ch-ua-mobile': '?1',
+      'origin': 'https://snapsave.cc',
+      'sec-fetch-site': 'same-origin',
+      'sec-fetch-mode': 'cors',
+      'sec-fetch-dest': 'empty',
+      'referer': 'https://snapsave.cc/facebook-video-downloader/',
+      'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+      'priority': 'u=1, i',
+    },
+    data: data,
+  };
+
+  try {
+    const response = await axios.request(config);
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch data', details: error.message });
+  }
+});
+
+
+
+app.get('/tiktrend', async (req, res, next) => {
+  try {
+    const response = await axios({
+      method: 'post',
+      url: 'https://www.tikwm.com/api/feed/list?region=PH',
+      data: {},
+    });
+
+    const data = response.data;
+    return res.json(data);
+  } catch (error) {
+    return res.json({ error: error});
+  }
+});
+
+
+
+
+app.get('/tikstalk', (req, res, next) => {
+  const user = req.query.username;
+
+  if (!user) {
+    return res.json({ error: "Missing username query!!" });
+  }
+
+  axios({
+    method: 'post',
+    url: 'https://www.tikwm.com/api/user/info',
+    data: {
+      unique_id: user,
+    },
+  })
+  .then(response => {
+    const data = response.data.data;
+    if (!data || !data.user) {
+      return res.json({ error: "User data not found!" });
+    }
+
+    const userInfo = {
+      id: data.user.id,
+      nickname: data.user.uniqueId,
+      username: data.user.nickname,
+      avatarLarger: data.user.avatarLarger,
+      signature: data.user.signature,
+      secUid: data.user.secUid,
+      relation: data.user.relation,
+      bioLink: data.user.bioLink,
+      videoCount: data.stats.videoCount,
+      followingCount: data.stats.followingCount,
+      followerCount: data.stats.followerCount,
+      heartCount: data.stats.heartCount,
+      diggCount: data.stats.diggCount,
+    };
+
+    return res.json(userInfo);
+  })
+  .catch(error => {
+    return res.json({ error: error });
+  });
+});
+
+
+
+
+
+app.get('/tiksearchv2', async (req, res) => {
+  const { search, count } = req.query;
+
+  if (!search) {
+    return res.status(400).json({ error: 'Search query is required' });
+  }
+
+  try {
+    const response = await axios.post(
+      'https://www.tikwm.com/api/feed/search',
+      new URLSearchParams({
+        'keywords': search,
+        'count': count || 20,
+        'cursor': '0',
+        'web': '1',
+        'hd': '1'
+      }),
+      {
+        headers: {
+          'authority': 'www.tikwm.com',
+          'accept': 'application/json, text/javascript, */*; q=0.01',
+          'accept-language': 'en-BD,en;q=0.9,hi-IN;q=0.8,hi;q=0.7,en-GB;q=0.6,en-US;q=0.5',
+          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'origin': 'https://www.tikwm.com',
+          'referer': 'https://www.tikwm.com/en/',
+          'sec-ch-ua': '"Not)A;Brand";v="24", "Chromium";v="116"',
+          'sec-ch-ua-mobile': '?1',
+          'sec-ch-ua-platform': '"Android"',
+          'sec-fetch-dest': 'empty',
+          'sec-fetch-mode': 'cors',
+          'sec-fetch-site': 'same-origin',
+          'user-agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36',
+          'x-requested-with': 'XMLHttpRequest'
+        }
+      }
+    );
+
+    const videos = response.data?.data?.videos || [];
+
+    const data = videos.map(video => ({
+      title: video.title,
+      video: `https://www.tikwm.com${video.play}`
+    }));
+    res.json({ data });
+  } catch (error) {
+    res.status(500).json({ error: error});
+  }
+});
+
+
+
+
+
+app.get("/tiksearch", async (req, res) => {
+  try {
+    const search = req.query.search;
+
+    if (!search) {
+      return res.json({ error: "Missing data to launch the program" });
+    }
+
+    const response = await axios.post("https://www.tikwm.com/api/feed/search", {
+      keywords: search,
+    });
+
+    const data = response.data;
+
+    if (data.data && data.data.videos && data.data.videos.length > 0) {
+      const randomIndex = Math.floor(Math.random() * data.data.videos.length);
+      const randomVideo = data.data.videos[randomIndex];
+
+      const videoId = randomVideo.video_id;
+      const play = `https://www.tikwm.com/video/media/hdplay/${videoId}.mp4`;
+
+/**   const result = {
+        title: title,
+        url: play,
+        duration: duration,
+        region: region,
+        music: music,
+      }; **/
+
+      res.setHeader("Content-Type", "video/mp4");
+      return res.redirect(play);
+    } else {
+      return res.json({ error: "No videos found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+app.get('/spotifydl', async (req, res) => {
+    const url = req.query.url;
+
+    if (!url) {
+        return res.status(400).json({ error: 'please provide a url' });
+    }
+
+    try {
+        const metadataResponse = await axios.post('https://spotydown.media/api/get-metadata', {
+            url: url
+        }, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+                'Content-Type': 'application/json',
+                'sec-ch-ua-platform': '"Android"',
+                'sec-ch-ua': '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
+                'dnt': '1',
+                'sec-ch-ua-mobile': '?1',
+                'origin': 'https://spotydown.com',
+                'sec-fetch-site': 'same-origin',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-dest': 'empty',
+                'referer': 'https://spotydown.com/',
+                'accept-language': 'en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6',
+                'priority': 'u=1, i'
+            }
+        });
+
+        const downloadResponse = await axios.post('https://spotifydownloader.pro', `url=${encodeURIComponent(url)}`, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'cache-control': 'max-age=0',
+                'sec-ch-ua': '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
+                'sec-ch-ua-mobile': '?1',
+                'sec-ch-ua-platform': '"Android"',
+                'origin': 'https://spotifydownloader.pro',
+                'dnt': '1',
+                'upgrade-insecure-requests': '1',
+                'sec-fetch-site': 'same-origin',
+                'sec-fetch-mode': 'navigate',
+                'sec-fetch-user': '?1',
+                'sec-fetch-dest': 'iframe',
+                'referer': 'https://spotifydownloader.pro/',
+                'accept-language': 'en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6',
+                'priority': 'u=0, i'
+            }
+        });
+
+        const $ = cheerio.load(downloadResponse.data);
+        const downloadUrl = $('.rb_btn').attr('href');
+
+        const trackData = metadataResponse.data.apiResponse.data[0];
+
+        res.json({
+            metadata: {
+                album: trackData.album,
+                album_artist: trackData.album_artist,
+                artist: trackData.artist,
+                track_name: trackData.name,
+                isrc: trackData.isrc,
+                release_date: trackData.releaseDate,
+                spotify_url: trackData.url,
+                cover_image: trackData.cover_url
+            },
+            download: {
+                file_url: downloadUrl
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.response?.data || error.message });
+    }
+});
+
+app.get('/api/tiktok', async (req, res) => {
+  try {
+    const url = req.query.link;
+    if (!url) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Please provide a TikTok URL'
+      });
+    }
+
+    const response = await axios.get("https://ssstik.io/en");
+    const s_tt = response.data.split('s_tt = ')[1].split(',')[0];
+
+    const params = new URLSearchParams();
+    params.append('id', url);
+    params.append('locale', 'en');
+    params.append('tt', s_tt);
+
+    const { data: result } = await axios.post("https://ssstik.io/abc?url=dl", params.toString(), {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.33"
+      }
+    });
+
+    const $ = cheerio.load(result);
+    if (result.includes('<div class="is-icon b-box warning">')) {
+      return res.status(400).json({
+        status: 'error',
+        message: $('p').text()
+      });
+    }
+
+    const allUrls = $('.result_overlay_buttons > a');
+    const format = {
+      status: 'success',
+      title: $('.maintext').text(),
+      downloadUrls: []
+    };
+
+    const slide = $(".slide");
+    if (slide.length !== 0) {
+      slide.each((index, element) => {
+        format.downloadUrls.push($(element).attr('href'));
+      });
+    } else {
+      format.downloadUrls.push($(allUrls[0]).attr('href'));
+    }
+
+    return res.json(format);
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: "An error occurred while downloading from TikTok"
+    });
+  }
+});
+
+
+app.get('/imgur', async (req, res) => {
+  const link = req.query.link;
+
+  if (!link) return res.json({ error: "missing image query" });
+
+  try {
+    const response = await axios.post(
+      "https://api.imgur.com/3/image", 
+      new URLSearchParams({ image: link }),
+      {
+        headers: {
+          Authorization: "Client-ID fc9369e9aea767c",
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }
+    );
+
+    const upload = response.data;
+    res.json({ uploaded: { status: "success", image: upload.data.link } });
+  } catch (error) {
+    res.json({ error: "Error namatay na" });
+  }
+});
+
+
+
+const lookupUrl = "https://lookup-id.com";
+
+app.get('/lookup', async (req, res) => {
+  const fbUrl = req.query.fblink;
+
+  if (!fbUrl) {
+    return res.status(400).json({ error: 'fblink parameter is required' });
+  }
+
+  try {
+    const { data } = await axios.get(lookupUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+      }
+    });
+
+    const $ = cheerio.load(data);
+
+    const formData = new URLSearchParams();
+    formData.append('fburl', fbUrl);
+    formData.append('check', 'Lookup');
+
+    const response = await axios.post(lookupUrl, formData.toString(), {
+      headers: {
+        'User-Agent': 'Mozilla/5.0',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+
+    const $response = cheerio.load(response.data);
+
+    const codeElement = $response('#code-wrap #code');
+    if (codeElement.length > 0) {
+      const code = codeElement.text();
+      const jsonResponse = { userid: code };
+      return res.json(jsonResponse);
+    } else {
+      return res.status(404).json({ error: 'Specified element not found.' });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get("/emojimix", async (req, res) => {
+    const emoji1 = req.query.emoji1;
+    const emoji2 = req.query.emoji2;
+    if (!emoji1 || !emoji2) {
+        return res.json({ error: "Please provide both emoji1 and emoji2 parameters" });
+    }
+    try {
+        const response = await axios.get(`https://tenor.googleapis.com/v2/featured?key=AIzaSyAyimkuYQYF_FXVALexPuGQctUWRURdCYQ&contentfilter=high&media_filter=png_transparent&component=proactive&collection=emoji_kitchen_v5&q=${encodeURIComponent(emoji1)}_${encodeURIComponent(emoji2)}`);
+        const image = response.data.results[0].url;
+        const imageBuffer = await axios.get(image, { responseType: 'arraybuffer' });
+
+        const buffer = Buffer.from(imageBuffer.data, 'binary');
+        res.set('Content-Type', 'image/jpeg');
+        res.send(buffer);
+    } catch (error) {
+        res.status(500).send({error});
+    }
+});
+
+
+
+app.get('/translate', async (req, res) => {
+    try {
+        const text = req.query.text;
+        const langCode = req.query.lang;
+
+        if (!text || !langCode) {
+            return res.status(400).json({ error: 'Text and language code are required.' });
+        }
+
+        const response = await axios.get(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${langCode}&dt=t&q=${encodeURIComponent(text)}`);
+        const translatedText = response.data[0][0][0];
+
+        res.json({ translatedText });
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+});
+
+
+
+
+
+
+
+const UNSPLASH_ACCESS_KEY = 'RZEIOVfPhS7vMLkFdd2TSKGFBS4o9_FmcV1Nje3FSjw';
+
+app.get('/unsplash', async (req, res) => {
+  const search = req.query.search;
+  let count = parseInt(req.query.count) || 1;
+
+  if (!search) {
+    return res.status(400).json({ error: 'Search query is required' });
+  }
+
+  count = Math.min(count, 5);
+
+  const url = `https://api.unsplash.com/search/photos?query=${search}&per_page=${count}&client_id=${UNSPLASH_ACCESS_KEY}`;
+
+  try {
+    const response = await axios.get(url);
+    const cleanData = response.data.results.map((image) => ({
+      id: image.id,
+      description: image.description || 'No description available',
+      alt_description: image.alt_description,
+      urls: image.urls,
+      user: {
+        name: image.user.name,
+        portfolio_url: image.user.portfolio_url,
+      },
+    }));
+
+    res.json(cleanData);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching data from Unsplash' });
+  }
+});
+
+
+
+app.get("/assistant", async (req, res) => {
+  try {
+    const userMessage = req.query.chat;
+
+    const data = {
+      "data": {
+        "prompt": [{ "role": "user", "content": userMessage }],
+        "userInfo": { "complexity": "Professional" }
+      }
+    };
+
+    const config = {
+      method: "POST",
+      url: "https://us-central1-aiassistant-so.cloudfunctions.net/getAIResponseStreamTune",
+      headers: {
+        "Content-Type": "application/json",
+        "Origin": "https://app.aiassistant.so",
+        "Referer": "https://app.aiassistant.so/chats/1",
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_1_0 like Mac OS X)"
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    const cleanResponse = response.data
+      .split("data: ")
+      .map(chunk => {
+        try {
+          return JSON.parse(chunk).choices[0]?.delta?.content || "";
+        } catch {
+          return "";
+        }
+      })
+      .join("")
+      .trim();
+
+    res.json({ response: cleanResponse });
+  } catch (error) {
+    res.status(500).json({ error: error});
+  }
+});
+
+app.get("/pinterest", async (req, res) => {
+  const search = req.query.search;
+  const amount = req.query.count;
+  if (!search || !amount) {
+    res.status(400).json({ error: "missing search or count parameters" });
+    return;
+  }
+
+  const headers = {
+    authority: "www.pinterest.com",
+    "cache-control": "max-age=0",
+    accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "upgrade-insecure-requests": "1",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
+    "sec-gpc": "1",
+    "sec-fetch-site": "same-origin",
+    "sec-fetch-mode": "same-origin",
+    "sec-fetch-dest": "empty",
+    "accept-language": "en-US,en;q=0.9",
+    cookie: 'csrftoken=92c7c57416496066c4cd5a47a2448e28; g_state={"i_l":0}; _auth=1; _pinterest_sess=TWc9PSZBMEhrWHJZbHhCVW1OSzE1MW0zSkVid1o4Uk1laXRzdmNwYll3eEFQV0lDSGNRaDBPTGNNUk5JQTBhczFOM0ZJZ1ZJbEpQYlIyUmFkNzlBV2kyaDRiWTI4THFVUWhpNUpRYjR4M2dxblJCRFhESlBIaGMwbjFQWFc2NHRtL3RUcTZna1c3K0VjVTgyejFDa1VqdXQ2ZEQ3NG91L1JTRHZwZHNIcDZraEp1L0lCbkJWUytvRis2ckdrVlNTVytzOFp3ZlpTdWtCOURnbGc3SHhQOWJPTzArY3BhMVEwOTZDVzg5VDQ3S1NxYXZGUEEwOTZBR21LNC9VZXRFTkErYmtIOW9OOEU3ektvY3ZhU0hZWVcxS0VXT3dTaFpVWXNuOHhiQWdZdS9vY24wMnRvdjBGYWo4SDY3MEYwSEtBV2JxYisxMVVsV01McmpKY0VOQ3NYSUt2ZDJaWld6T0RacUd6WktITkRpZzRCaWlCTjRtVXNMcGZaNG9QcC80Ty9ZZWFjZkVGNURNZWVoNTY4elMyd2wySWhtdWFvS2dQcktqMmVUYmlNODBxT29XRWx5dWZSc1FDY0ZONlZJdE9yUGY5L0p3M1JXYkRTUDAralduQ2xxR3VTZzBveUc2Ykx3VW5CQ0FQeVo5VE8wTEVmamhwWkxwMy9SaTNlRUpoQmNQaHREbjMxRlRrOWtwTVI5MXl6cmN1K2NOTFNyU1cyMjREN1ZFSHpHY0ZCR1RocWRjVFZVWG9VcVpwbXNGdlptVzRUSkNadVc1TnlBTVNGQmFmUmtrNHNkVEhXZytLQjNUTURlZXBUMG9GZ3YwQnVNcERDak16Nlp0Tk13dmNsWG82U2xIKyt5WFhSMm1QUktYYmhYSDNhWnB3RWxTUUttQklEeGpCdE4wQlNNOVRzRXE2NkVjUDFKcndvUzNMM2pMT2dGM05WalV2QStmMC9iT055djFsYVBKZjRFTkRtMGZZcWFYSEYvNFJrYTZSbVRGOXVISER1blA5L2psdURIbkFxcTZLT3RGeGswSnRHdGNpN29KdGFlWUxtdHNpSjNXQVorTjR2NGVTZWkwPSZzd3cwOXZNV3VpZlprR0VBempKdjZqS00ybWM9; _b="AV+pPg4VpvlGtL+qN4q0j+vNT7JhUErvp+4TyMybo+d7CIZ9QFohXDj6+jQlg9uD6Zc="; _routing_id="d5da9818-8ce2-4424-ad1e-d55dfe1b9aed"; sessionFunnelEventLogged=1'
+  };
+
+  const options = {
+    url: "https://www.pinterest.com/search/pins/?q=" + search + "&rs=typed&term_meta[]=" + search + "%7Ctyped",
+    headers: headers
+  };
+
+  try {
+    const response = await axios.get(options.url, { headers: headers });
+    const arrMatch = response.data.match(/https:\/\/i\.pinimg\.com\/originals\/[^.]+\.jpg/g);
+    const limitedData = arrMatch.slice(0, amount);
+    return res.json({
+      count: limitedData.length,
+      data: limitedData
+    });
+  } catch (error) {
+    res.json({ error: error });
+  }
+});
+
+
 app.use((req, res, next) => {
   try {
 res.status(404).sendFile(path.join(__dirname, "cliff", "404.html"));
