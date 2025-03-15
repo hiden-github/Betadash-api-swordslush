@@ -10458,108 +10458,6 @@ data.append('type', '1');
   }
 });
 
-
-app.get("/instadl", async (req, res) => {
-  const url = req.query.url;
-  const msg = {
-    paramurl: {
-      status: false,
-      Author: "yazky",
-      message: "Missing Parameter URL!",
-    },
-    nodata: {
-      status: false,
-      Author: "yazky",
-      message: "Data not found!",
-    },
-  };
-
-  if (!url) return res.json(msg.paramurl);
-
-  try {
-    const data = await igdl(url);
-    if (!data.length) {
-      return res.json(msg.nodata);
-    }
-
-    const videoItem = data.find(item => item.type === "video");
-    if (videoItem) {
-      const videoResponse = await axios.get(videoItem.url, { responseType: 'stream' });
-      res.setHeader('Content-Type', 'video/mp4');
-      videoResponse.data.pipe(res);
-    } else {
-      res.json({
-        status: true,
-        Author: "yazky",
-        result: data,
-      });
-    }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-async function igdl(url) {
-  try {
-    const initialResponse = await axios("https://indown.io/", {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-      },
-    });
-
-    const _$ = cheerio.load(initialResponse.data);
-    const _token = _$('input[name="_token"]').val();
-    const referer = "https://indown.io";
-    const locale = "en";
-    const p = "2001:4451:87ff:3300:d8f6:cbf8:d85f:a5c3"; 
-
-    const { data } = await axios.post(
-      "https://indown.io/download",
-      new URLSearchParams({
-        link: url,
-        referer,
-        locale,
-        p,
-        _token,
-      }),
-      {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-          "Content-Type": "application/x-www-form-urlencoded",
-          cookie: initialResponse.headers["set-cookie"].join("; "),
-        },
-      }
-    );
-
-    const $ = cheerio.load(data);
-    const result = [];
-    const __$ = cheerio.load($("#result").html());
-    __$("video").each(function () {
-      const $$ = $(this);
-      result.push({
-        type: "video",
-        thumbnail: $$.attr("poster"),
-        url: $$.find("source").attr("src"),
-      });
-    });
-    __$("img").each(function () {
-      const $$ = $(this);
-      result.push({
-        type: "image",
-        url: $$.attr("src"),
-      });
-    });
-
-    return result;
-  } catch (error) {
-    throw new Error(error);
-  }
-}
-
-
-
-
-
 function generateRandomAddress() {
   const characters = 'abcdef0123456789';
   let address = '0x';
@@ -10806,9 +10704,6 @@ app.get('/tiksearchv2', async (req, res) => {
     res.status(500).json({ error: error});
   }
 });
-
-
-
 
 
 app.get("/tiksearch", async (req, res) => {
@@ -12115,9 +12010,6 @@ app.get('/water-writing', async (req, res) => {
 });
 
 
-
-
-
 app.get('/yacht', async (req, res) => {
   const { text } = req.query;
 
@@ -12316,6 +12208,111 @@ const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" })
   }
 });
 
+
+app.get('/scrape', async (req, res) => {
+  const { url } = req.query;
+
+  if (!url) {
+    return res.status(400).json({ error: 'Please provide a Url to scrape' });
+  }
+
+  try {
+    const apiUrl = `https://scrape.abstractapi.com/v1/?api_key=dc3fc7bc7dc540a7b1df7827fe205360&url=${encodeURIComponent(url)}`;
+    const response = await axios.get(apiUrl);
+    res.send({data: response.data});
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch data', details: error.message });
+  }
+});
+
+const author = "cliff";
+
+app.get("/instadl", async (req, res) => {
+  const url = req.query.url;
+  const msg = {
+    paramurl: {
+      status: false,
+      Author: author,
+      message: "Missing Parameter URL!",
+    },
+    nodata: {
+      status: false,
+      Author: author,
+      message: "Data not found!",
+    },
+  };
+
+  if (!url) return res.json(msg.paramurl);
+
+  try {
+    const data = await igdl(url);
+    if (!data.length) {
+      return res.json(msg.nodata);
+    }
+
+    res.json({
+      status: true,
+      Author: author,
+      result: data,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+async function igdl(url) {
+  const initialResponse = await axios("https://indown.io/", {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+    },
+  });
+
+  const _$ = cheerio.load(initialResponse.data);
+
+  const _token = _$('input[name="_token"]').val();
+  const referer = "https://indown.io";
+  const locale = "en";
+  const p = "2001:4451:87ff:3300:d8f6:cbf8:d85f:a5c3"; // This may need to be dynamic as well
+
+  const { data } = await axios.post(
+    "https://indown.io/download",
+    new URLSearchParams({
+      link: url,
+      referer,
+      locale,
+      p,
+      _token,
+    }),
+    {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+        "Content-Type": "application/x-www-form-urlencoded",
+        cookie: initialResponse.headers["set-cookie"].join("; "),
+      },
+    }
+  );
+
+  const $ = cheerio.load(data);
+  const result = [];
+  const __$ = cheerio.load($("#result").html());
+  __$("video").each(function () {
+    const $$ = $(this);
+    result.push({
+      type: "video",
+      thumbnail: $$.attr("poster"),
+      url: $$.find("source").attr("src"),
+    });
+  });
+  __$("img").each(function () {
+    const $$ = $(this);
+    result.push({
+      type: "image",
+      url: $$.attr("src"),
+    });
+  });
+
+  return result;
+}
 
 
 app.use((req, res, next) => {

@@ -2041,10 +2041,6 @@ async function handleApiRequest(apiUrl, modalRefs, apiName) {
       const data = {};
       inputs.forEach(input => {
         let value = input.value.trim() || params.get(input.dataset.param) || '';
-
-        if (!/^https?:\/\//.test(value)) {
-          value = encodeURIComponent(value);
-        }
         data[input.dataset.param] = value;
       });
       modalRefs.queryInputContainer.innerHTML = '';
@@ -2369,6 +2365,9 @@ async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', body
         {
           name: "TOOLS",
           items: [
+            { url: "/scrape?url=",
+              name: "𖣘 Scrape",
+              description: "Scraping website only html and headers"},
             { url: "/translate?text=&lang=", name: "𖣘 Translate", description: "Translator tool" },
             { url: "/emojimix?emoji1=&emoji2=", name: "𖣘 EmojiMix", description: "Emoji mixer" },
             { url: "/lookup?fblink=", name: "𖣘 Lookup", description: "Facebook lookup" },
