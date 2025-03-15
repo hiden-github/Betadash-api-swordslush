@@ -4,16 +4,6 @@
     {
       "src": "index.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "package.json",
-      "use": "@vercel/node",
-      "config": {
-        "buildCommand": "npm run build",
-        "env": {
-          "DEBUG": "vercel,*"
-        }
-      }
     }
   ],
   "routes": [
