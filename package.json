@@ -14,7 +14,7 @@
     "@ruingl/gptx": "^1.0.6",
     "@types/node": "^18.0.6",
     "axios": "^1.7.7",
-    "canvas": "^3.1.0",
+    "canvas": "npm:@napi-rs/canvas@^0.1.68",
     "cheerio": "^1.0.0",
     "discord-card-canvas": "^2.0.1",
     "discord-image-generation": "^1.4.25",
