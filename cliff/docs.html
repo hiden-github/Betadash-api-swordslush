@@ -1661,7 +1661,12 @@ async function handleApiRequest(apiUrl, modalRefs, apiName) {
   max-height: none;
        }
   </style>
-
+  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>
+  (function() {
+    eruda.init();
+  })();
+</script>
 </head>
 <body class="bg-gradient-to-br from-dark-950 via-dark-900 to-dark-850 text-gray-200 font-sans min-h-screen relative transition-colors duration-300">
   <div id="loadingScreen" class="fixed inset-0 bg-dark-950 z-50 flex flex-col items-center justify-center transition-colors duration-300">
@@ -1975,257 +1980,265 @@ async function handleApiRequest(apiUrl, modalRefs, apiName) {
         const apiItem = event.target.closest('.sidebar-api-item');
         if (apiItem) handleApiClick(apiItem.dataset);
       });
+
+
       function handleApiClick(dataset) {
-        const { apiPath, apiName, apiDesc, apiAuthor, apiMethod } = dataset;
-        const method = apiMethod ? apiMethod.toLowerCase() : 'get';
-        const modal = document.getElementById('apiResponseModal');
-        modal.classList.remove('hidden');
-        const modalRefs = {
-          label: document.getElementById('apiResponseModalLabel'),
-          desc: document.getElementById('apiResponseModalDesc'),
-          content: document.getElementById('apiResponseContent'),
-          endpoint: document.getElementById('apiEndpoint'),
-          spinner: document.getElementById('apiResponseLoading'),
-          queryInputContainer: document.getElementById('apiQueryInputContainer'),
-          submitBtn: document.getElementById('submitQueryBtn'),
-          copyBtn: document.getElementById('copyApiEndpointBtn')
-        };
-        modalRefs.label.textContent = capitalizeFirstLetter(apiName);
-        const capitalizedAuthor = apiAuthor;
-        modalRefs.desc.textContent = `${capitalizeFirstLetter(apiDesc)}`;
-        modalRefs.content.textContent = '';
-        modalRefs.endpoint.textContent = '';
-        modalRefs.spinner.classList.add('hidden');
-        modalRefs.content.classList.add('hidden');
-        modalRefs.endpoint.classList.add('hidden');
-        modalRefs.queryInputContainer.innerHTML = '';
-        modalRefs.submitBtn.classList.add('hidden');
-        modalRefs.copyBtn.classList.add('hidden');
-        let baseApiUrl = `${window.location.origin}${apiPath.split('?')[0]}`;
-        let paramsString = apiPath.split('?')[1] || '';
-        let params = new URLSearchParams(paramsString);
-        let hasParams = params.toString().length > 0;
-        if (hasParams) {
-          const paramContainer = document.createElement('div');
-          paramContainer.className = 'space-y-4';
-          Array.from(params.keys()).forEach(param => {
-            const inputGroup = document.createElement('div');
-            inputGroup.className = 'flex flex-col';
-            const label = document.createElement('label');
-            label.htmlFor = `param-${param}`;
-            label.className = 'text-gray-300 mb-2 font-medium';
-            label.textContent = capitalizeFirstLetter(param);
-            const inputField = document.createElement('input');
-            inputField.type = 'text';
-            inputField.id = `param-${param}`;
-            inputField.className = 'bg-dark-600 border border-dark-500 text-white rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all';
-            inputField.placeholder = `Enter ${param}...`;
-            inputField.dataset.param = param;
-            inputField.required = false;
-            inputGroup.appendChild(label);
-            inputGroup.appendChild(inputField);
-            paramContainer.appendChild(inputGroup);
-          });
-          modalRefs.queryInputContainer.appendChild(paramContainer);
-          modalRefs.submitBtn.classList.remove('hidden');
-          modalRefs.submitBtn.disabled = false;
-          modalRefs.submitBtn.onclick = async () => {
-            const inputs = modalRefs.queryInputContainer.querySelectorAll('input');
-            const data = {};
-            inputs.forEach(input => {
-              data[input.dataset.param] = input.value.trim() || params.get(input.dataset.param) || '';
-            });
-            modalRefs.queryInputContainer.innerHTML = '';
-            modalRefs.submitBtn.classList.add('hidden');
-            if (method === 'get') {
-              const newParams = new URLSearchParams(data);
-              const apiUrlWithParams = `${baseApiUrl}?${newParams.toString()}`;
-              handleApiRequest(apiUrlWithParams, modalRefs, apiName, 'get');
-            } else if (method === 'post') {
-              handleApiRequest(baseApiUrl, modalRefs, apiName, 'post', data);
-            }
-          };
-        } else {
-          handleApiRequest(baseApiUrl, modalRefs, apiName, method);
+  const { apiPath, apiName, apiDesc, apiAuthor, apiMethod } = dataset;
+  const method = apiMethod ? apiMethod.toLowerCase() : 'get';
+  const modal = document.getElementById('apiResponseModal');
+  modal.classList.remove('hidden');
+  const modalRefs = {
+    label: document.getElementById('apiResponseModalLabel'),
+    desc: document.getElementById('apiResponseModalDesc'),
+    content: document.getElementById('apiResponseContent'),
+    endpoint: document.getElementById('apiEndpoint'),
+    spinner: document.getElementById('apiResponseLoading'),
+    queryInputContainer: document.getElementById('apiQueryInputContainer'),
+    submitBtn: document.getElementById('submitQueryBtn'),
+    copyBtn: document.getElementById('copyApiEndpointBtn')
+  };
+  modalRefs.label.textContent = capitalizeFirstLetter(apiName);
+  const capitalizedAuthor = apiAuthor;
+  modalRefs.desc.textContent = `${capitalizeFirstLetter(apiDesc)}`;
+  modalRefs.content.textContent = '';
+  modalRefs.endpoint.textContent = '';
+  modalRefs.spinner.classList.add('hidden');
+  modalRefs.content.classList.add('hidden');
+  modalRefs.endpoint.classList.add('hidden');
+  modalRefs.queryInputContainer.innerHTML = '';
+  modalRefs.submitBtn.classList.add('hidden');
+  modalRefs.copyBtn.classList.add('hidden');
+  let baseApiUrl = `${window.location.origin}${apiPath.split('?')[0]}`;
+  let paramsString = apiPath.split('?')[1] || '';
+  let params = new URLSearchParams(paramsString);
+  let hasParams = params.toString().length > 0;
+  if (hasParams) {
+    const paramContainer = document.createElement('div');
+    paramContainer.className = 'space-y-4';
+    Array.from(params.keys()).forEach(param => {
+      const inputGroup = document.createElement('div');
+      inputGroup.className = 'flex flex-col';
+      const label = document.createElement('label');
+      label.htmlFor = `param-${param}`;
+      label.className = 'text-gray-300 mb-2 font-medium';
+      label.textContent = capitalizeFirstLetter(param);
+      const inputField = document.createElement('input');
+      inputField.type = 'text';
+      inputField.id = `param-${param}`;
+      inputField.className = 'bg-dark-600 border border-dark-500 text-white rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all';
+      inputField.placeholder = `Enter ${param}...`;
+      inputField.dataset.param = param;
+      inputField.required = false;
+      inputGroup.appendChild(label);
+      inputGroup.appendChild(inputField);
+      paramContainer.appendChild(inputGroup);
+    });
+    modalRefs.queryInputContainer.appendChild(paramContainer);
+    modalRefs.submitBtn.classList.remove('hidden');
+    modalRefs.submitBtn.disabled = false;
+    modalRefs.submitBtn.onclick = async () => {
+      const inputs = modalRefs.queryInputContainer.querySelectorAll('input');
+      const data = {};
+      inputs.forEach(input => {
+        let value = input.value.trim() || params.get(input.dataset.param) || '';
+
+        if (!/^https?:\/\//.test(value)) {
+          value = encodeURIComponent(value);
         }
-        modalRefs.copyBtn.addEventListener('click', () => {
-          const apiUrl = modalRefs.endpoint.textContent;
-          navigator.clipboard.writeText(apiUrl).then(() => {
-            modalRefs.copyBtn.innerHTML = `
+        data[input.dataset.param] = value;
+      });
+      modalRefs.queryInputContainer.innerHTML = '';
+      modalRefs.submitBtn.classList.add('hidden');
+      if (method === 'get') {
+        const newParams = new URLSearchParams(data);
+        const apiUrlWithParams = `${baseApiUrl}?${newParams.toString()}`;
+        handleApiRequest(apiUrlWithParams, modalRefs, apiName, 'get');
+      } else if (method === 'post') {
+        handleApiRequest(baseApiUrl, modalRefs, apiName, 'post', data);
+      }
+    };
+  } else {
+    handleApiRequest(baseApiUrl, modalRefs, apiName, method);
+  }
+  modalRefs.copyBtn.addEventListener('click', () => {
+    const apiUrl = modalRefs.endpoint.textContent;
+    navigator.clipboard.writeText(apiUrl).then(() => {
+      modalRefs.copyBtn.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
           `;
-            setTimeout(() => {
-              modalRefs.copyBtn.innerHTML = `
+      setTimeout(() => {
+        modalRefs.copyBtn.innerHTML = `
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
             `;
-            }, 2000);
-          });
-        });
+      }, 2000);
+    });
+  });
+}
+
+function validateInputs() {
+  const submitBtn = document.getElementById('submitQueryBtn');
+  const inputs = document.querySelectorAll('#apiQueryInputContainer input');
+  const isValid = Array.from(inputs).every(input => input.value.trim() !== '');
+  submitBtn.disabled = !isValid;
+  if (isValid) {
+    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+  } else {
+    submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+  }
+}
+async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', bodyData = null) {
+  modalRefs.spinner.classList.remove('hidden');
+  modalRefs.content.classList.add('hidden');
+  modalRefs.content.classList.remove('text-red-400');
+  try {
+    const options = {};
+    if (method === 'post') {
+      options.method = 'POST';
+      options.headers = { 'Content-Type': 'application/json' };
+      if (bodyData) options.body = JSON.stringify(bodyData);
+    }
+    const response = await fetch(apiUrl, options);
+    const contentType = response.headers.get('Content-Type');
+    const contentDisposition = response.headers.get('Content-Disposition');
+    let filename = apiName || 'download';
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="?(.+?)"?$/);
+      if (filenameMatch && filenameMatch[1]) {
+        filename = filenameMatch[1];
       }
-      function validateInputs() {
-        const submitBtn = document.getElementById('submitQueryBtn');
-        const inputs = document.querySelectorAll('#apiQueryInputContainer input');
-        const isValid = Array.from(inputs).every(input => input.value.trim() !== '');
-        submitBtn.disabled = !isValid;
-        if (isValid) {
-          submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        } else {
-          submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    } else {
+      const urlPath = new URL(apiUrl).pathname;
+      const urlFilename = urlPath.split('/').pop();
+      if (urlFilename) {
+        filename = urlFilename;
+      }
+    }
+    if (contentType && contentType.startsWith('image/')) {
+      const blob = await response.blob();
+      const imageUrl = URL.createObjectURL(blob);
+      const img = document.createElement('img');
+      img.src = imageUrl;
+      img.alt = filename;
+      img.className = 'max-w-full h-auto rounded-lg';
+      modalRefs.content.innerHTML = '';
+      modalRefs.content.appendChild(img);
+      const downloadButton = document.createElement('button');
+      downloadButton.textContent = 'Download Image';
+      downloadButton.className = 'bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 mt-4';
+      downloadButton.onclick = () => {
+        const a = document.createElement('a');
+        a.href = imageUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      };
+      modalRefs.content.appendChild(downloadButton);
+    } else if (contentType && contentType.includes('application/json')) {
+      const data = await response.json();
+      const formattedJson = JSON.stringify(data, null, 2);
+      modalRefs.content.innerHTML = formattedJson.replace(
+        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+        function(match) {
+          let cls = 'text-amber-300';
+          if (/^"/.test(match)) {
+            cls = /:$/.test(match) ? 'text-primary-300' : 'text-green-300';
+          } else if (/true|false/.test(match)) {
+            cls = 'text-blue-300';
+          } else if (/null/.test(match)) {
+            cls = 'text-red-300';
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
         }
+      );
+      if (!response.ok) {
+        modalRefs.content.classList.add('text-red-400');
       }
-      async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', bodyData = null) {
-        modalRefs.spinner.classList.remove('hidden');
-        modalRefs.content.classList.add('hidden');
-        modalRefs.content.classList.remove('text-red-400');
-        try {
-          const options = {};
-          if (method === 'post') {
-            options.method = 'POST';
-            options.headers = { 'Content-Type': 'application/json' };
-            if (bodyData) options.body = JSON.stringify(bodyData);
-          }
-          const response = await fetch(apiUrl, options);
-          const contentType = response.headers.get('Content-Type');
-          const contentDisposition = response.headers.get('Content-Disposition');
-          let filename = apiName || 'download';
-          if (contentDisposition) {
-            const filenameMatch = contentDisposition.match(/filename="?(.+?)"?$/);
-            if (filenameMatch && filenameMatch[1]) {
-              filename = filenameMatch[1];
-            }
-          } else {
-            const urlPath = new URL(apiUrl).pathname;
-            const urlFilename = urlPath.split('/').pop();
-            if (urlFilename) {
-              filename = urlFilename;
-            }
-          }
-          if (contentType && contentType.startsWith('image/')) {
-            const blob = await response.blob();
-            const imageUrl = URL.createObjectURL(blob);
-            const img = document.createElement('img');
-            img.src = imageUrl;
-            img.alt = filename;
-            img.className = 'max-w-full h-auto rounded-lg';
-            modalRefs.content.innerHTML = '';
-            modalRefs.content.appendChild(img);
-            const downloadButton = document.createElement('button');
-            downloadButton.textContent = 'Download Image';
-            downloadButton.className = 'bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 mt-4';
-            downloadButton.onclick = () => {
-              const a = document.createElement('a');
-              a.href = imageUrl;
-              a.download = filename;
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-            };
-            modalRefs.content.appendChild(downloadButton);
-          } else if (contentType && contentType.includes('application/json')) {
-            const data = await response.json();
-            const formattedJson = JSON.stringify(data, null, 2);
-            modalRefs.content.innerHTML = formattedJson.replace(
-              /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-              function (match) {
-                let cls = 'text-amber-300';
-                if (/^"/.test(match)) {
-                  cls = /:$/.test(match) ? 'text-primary-300' : 'text-green-300';
-                } else if (/true|false/.test(match)) {
-                  cls = 'text-blue-300';
-                } else if (/null/.test(match)) {
-                  cls = 'text-red-300';
-                }
-                return '<span class="' + cls + '">' + match + '</span>';
-              }
-            );
-           if (!response.ok) {
-              modalRefs.content.classList.add('text-red-400');
-            } 
-          } else if (contentType && contentType.includes('text/html')) {
-            const html = await response.text();
-            const iframe = document.createElement('iframe');
-            iframe.srcdoc = html;
-            iframe.style.width = '100%';
-            iframe.style.height = '500px';
-            iframe.style.border = 'none';
-            iframe.style.borderRadius = '8px';
-            modalRefs.content.innerHTML = '';
-            modalRefs.content.appendChild(iframe);
-          } else if (contentType && contentType.includes('text/plain')) {
-            const text = await response.text();
-            modalRefs.content.textContent = text;
-          } else if (contentType && (contentType.includes('text/event-stream') || contentType.includes('application/octet-stream'))) {
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let result = '';
-            const readStream = async () => {
-              while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                const chunk = decoder.decode(value, { stream: true });
-                result += chunk;
-                modalRefs.content.textContent = result;
-                modalRefs.content.scrollTop = modalRefs.content.scrollHeight;
-              }
-            };
-            await readStream();
-          } else if (contentType && (contentType.includes('audio/') || contentType.includes('video/'))) {
-            const blob = await response.blob();
-            const mediaUrl = URL.createObjectURL(blob);
-            const container = document.createElement('div');
-            container.className = 'flex flex-col gap-4';
-            if (contentType.includes('audio/')) {
-              const audio = document.createElement('audio');
-              audio.src = mediaUrl;
-              audio.controls = true;
-              audio.className = 'w-full';
-              container.appendChild(audio);
-            } else if (contentType.includes('video/')) {
-              const video = document.createElement('video');
-              video.src = mediaUrl;
-              video.controls = true;
-              video.className = 'w-full';
-              container.appendChild(video);
-            }
-            const downloadButton = document.createElement('button');
-            downloadButton.textContent = 'Download';
-            downloadButton.className = 'bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600';
-            downloadButton.onclick = () => {
-              const a = document.createElement('a');
-              a.href = mediaUrl;
-              a.download = filename;
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-            };
-            container.appendChild(downloadButton);
-            modalRefs.content.innerHTML = '';
-            modalRefs.content.appendChild(container);
-          } else {
-            const blob = await response.blob();
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.textContent = 'Download file';
-            modalRefs.content.innerHTML = '';
-            modalRefs.content.appendChild(a);
-          }
-          modalRefs.endpoint.textContent = apiUrl;
-          modalRefs.endpoint.classList.remove('hidden');
-          modalRefs.copyBtn.classList.remove('hidden');
-        } catch (error) {
-          modalRefs.content.textContent = `Error: ${error.message}`;
-          modalRefs.content.classList.add('text-red-400');
-        } finally {
-          modalRefs.spinner.classList.add('hidden');
-          modalRefs.content.classList.remove('hidden');
+    } else if (contentType && contentType.includes('text/html')) {
+      const html = await response.text();
+      const iframe = document.createElement('iframe');
+      iframe.srcdoc = html;
+      iframe.style.width = '100%';
+      iframe.style.height = '500px';
+      iframe.style.border = 'none';
+      iframe.style.borderRadius = '8px';
+      modalRefs.content.innerHTML = '';
+      modalRefs.content.appendChild(iframe);
+    } else if (contentType && contentType.includes('text/plain')) {
+      const text = await response.text();
+      modalRefs.content.textContent = text;
+    } else if (contentType && (contentType.includes('text/event-stream') || contentType.includes('application/octet-stream'))) {
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let result = '';
+      const readStream = async () => {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          result += chunk;
+          modalRefs.content.textContent = result;
+          modalRefs.content.scrollTop = modalRefs.content.scrollHeight;
         }
+      };
+      await readStream();
+    } else if (contentType && (contentType.includes('audio/') || contentType.includes('video/'))) {
+      const blob = await response.blob();
+      const mediaUrl = URL.createObjectURL(blob);
+      const container = document.createElement('div');
+      container.className = 'flex flex-col gap-4';
+      if (contentType.includes('audio/')) {
+        const audio = document.createElement('audio');
+        audio.src = mediaUrl;
+        audio.controls = true;
+        audio.className = 'w-full';
+        container.appendChild(audio);
+      } else if (contentType.includes('video/')) {
+        const video = document.createElement('video');
+        video.src = mediaUrl;
+        video.controls = true;
+        video.className = 'w-full';
+        container.appendChild(video);
       }
+      const downloadButton = document.createElement('button');
+      downloadButton.textContent = 'Download';
+      downloadButton.className = 'bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600';
+      downloadButton.onclick = () => {
+        const a = document.createElement('a');
+        a.href = mediaUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      };
+      container.appendChild(downloadButton);
+      modalRefs.content.innerHTML = '';
+      modalRefs.content.appendChild(container);
+    } else {
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.textContent = 'Download file';
+      modalRefs.content.innerHTML = '';
+      modalRefs.content.appendChild(a);
+    }
+    modalRefs.endpoint.textContent = apiUrl;
+    modalRefs.endpoint.classList.remove('hidden');
+    modalRefs.copyBtn.classList.remove('hidden');
+  } catch (error) {
+    modalRefs.content.textContent = `Error: ${error.message}`;
+    modalRefs.content.classList.add('text-red-400');
+  } finally {
+    modalRefs.spinner.classList.add('hidden');
+    modalRefs.content.classList.remove('hidden');
+  }
+}
       document.getElementById('closeModalBtn').addEventListener('click', () => {
         document.getElementById('apiResponseModal').classList.add('hidden');
       });
@@ -2573,13 +2586,30 @@ async function handleApiRequest(apiUrl, modalRefs, apiName) {
         { url: "/london-gallery?userid=", name: "𖣘 London Gallery", description: "Generate london-gallery-canvas for the specified userid" },
         { url: "/painting-snap?userid=", name: "𖣘 Painting Snap", description: "Generate painting-snap-canvas for the specified userid" },
         { url: "/trump?userid=&text=", name: "𖣘 Trump", description: "Generate trump-canvas for the specified userid and text" },
-        { url: "/captivity?userid=", name: "𖣘 Captivity", description: "Generate captivity-canvas for the specified userid" }
+        { url: "/captivity?userid=", name: "𖣘 Captivity", description: "Generate captivity-canvas for the specified userid" },
+
+  { url: "/pavement?userid=", name: "𖣘 Pavement", description: "Generate Pavement-canvas for the specified userid" },
+  { url: "/graffiti-billboard?userid=", name: "𖣘 Graffiti Billboard", description: "Generate Graffiti Billboard-canvas for the specified userid" },
+  { url: "/graffiti-wall?userid=", name: "𖣘 Graffiti Wall", description: "Generate Graffiti Wall-canvas for the specified userid" },
+  { url: "/pisa-street?userid=", name: "𖣘 Pisa Street", description: "Generate Pisa Street-canvas for the specified userid" },
+  { url: "/red-wall?userid=", name: "𖣘 Red Wall", description: "Generate Red Wall-canvas for the specified userid" },
+  { url: "/easter?userid=", name: "𖣘 Easter", description: "Generate Easter-canvas for the specified userid" },
+  { url: "/bracelet?text=", name: "𖣘 Bracelet", description: "Generate Bracelet-canvas with the specified text" },
+  { url: "/activists?userid=&text=", name: "𖣘 Activists", description: "Generate Activists-canvas for the specified userid and text" },
+  { url: "/explorer?userid=", name: "𖣘 Explorer", description: "Generate Explorer-canvas for the specified userid" },
+  { url: "/cinema?userid=", name: "𖣘 Cinema", description: "Generate Cinema-canvas for the specified userid" },
+  { url: "/stadium?userid=", name: "𖣘 Stadium", description: "Generate Stadium-canvas for the specified userid" },
+  { url: "/tokyo-crossing?userid=", name: "𖣘 Tokyo Crossing", description: "Generate Tokyo Crossing-canvas for the specified userid" },
+  { url: "/tablet?userid=", name: "𖣘 Tablet", description: "Generate Tablet-canvas for the specified userid" },
+  { url: "/water-writing?text=", name: "𖣘 Water Writing", description: "Generate Water Writing-canvas with the specified text" },
+  { url: "/yacht?text=", name: "𖣘 Yacht", description: "Generate Yacht-canvas with the specified text" },
+  { url: "/street-sign?text=", name: "𖣘 Street Sign", description: "Generate Street Sign-canvas with the specified text" },
+  { url: "/denim?text=&color=", name: "𖣘 Denim", description: "Generate Denim-canvas with the specified text and color" },
+  { url: "/pictures-sale?userid=", name: "𖣘 Pictures Sale", description: "Generate Pictures Sale-canvas for the specified userid" }
       ]
     }
   ]
 };
-
-
         const setContent = (id, property, value) => {
           const element = document.getElementById(id);
           if (element) {
