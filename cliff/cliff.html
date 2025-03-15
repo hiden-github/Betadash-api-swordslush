@@ -1,0 +1,1198 @@
+<!--
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⠿⠛⢉⣉⣠⣤⣤⣤⣴⣦⣤⣤⣀⡉⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⠋⢁⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⡟⠁⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠿⠿⠂⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⡟⠀⣼⣿⣿⡏⢉⣁⣀⣀⣤⣤⣄⠀⣴⣿⣿⡇⢠⣶⣶⠒⠲⡆⢀⠈⢿⣿⣿⣿⣿⣿⣿⣿
+⣿⠁⣼⣿⣿⣿⠀⢿⣿⣿⣏⣀⣹⠟⢀⣿⣿⣿⣷⡈⠛⠿⠃⢀⣠⣿⣆⠈⣿⣿⣿⣿⣿⣿⣿
+⡇⢠⣿⣿⣿⣿⣧⣀⠉⠛⠛⠉⣁⣠⣾⣿⣿⣿⣿⣿⣷⣶⠾⠿⠿⣿⣿⡄⢸⣿⣿⣿⣿⣿⣿
+⡇⢸⣿⣿⣿⣿⡿⠿⠟⠛⠛⠛⢉⣉⣉⣉⣉⣩⣤⣤⣤⣤⠀⣴⣶⣿⣿⡇⠀⣿⣿⣿⣿⣿⣿
+⠅⢸⣿⣿⣿⣷⣶⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⢸⣿⣿⣿⠃⢸⣿⣿⣿⠛⢻⣿
+⣇⠈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠉⣿⡟⢀⣾⣿⠟⠁⣰⣿⣿⣿⡿⠀⠸⣿
+⣿⣆⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠀⠙⣠⣾⠟⠁⣠⣾⣿⣿⣿⣿⠀⣶⠂⣽
+⣿⣿⣷⣄⡈⠙⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⣴⠆⠀⠋⢀⣴⣿⣿⡿⠟⠛⠉⠀⢂⣡⣾⣿
+⣿⣿⣿⣿⣿⠇⢀⣄⣀⡉⠉⠉⠉⠉⠉⣉⠤⠈⢁⣤⣶⠀⠾⠟⣋⡡⠔⢊⣠⣴⣾⣿⣿⣿⣿
+⣿⣿⣿⣿⠏⢠⣿⣿⡿⠛⢋⣠⠴⠚⢉⣥⣴⣾⣿⣿⣿⠀⠴⠛⣉⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⡏⢀⣿⣿⣯⠴⠛⠉⣠⣴⣾⣿⣿⣿⣿⣿⣿⣿⠀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⡟⠀⣼⣿⣿⣧⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⠃⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⡟⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⠃⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱▱
+███████╗██╗░░░██╗░█████╗░██╗░░██╗
+██╔════╝██║░░░██║██╔══██╗██║░██╔╝
+█████╗░░██║░░░██║██║░░╚═╝█████═╝░
+██╔══╝░░██║░░░██║██║░░██╗██╔═██╗░
+██║░░░░░╚██████╔╝╚█████╔╝██║░╚██╗
+╚═╝░░░░░░╚═════╝░░╚════╝░╚═╝░░╚═╝
+██╗░░░██╗░█████╗░██╗░░░██╗
+╚██╗░██╔╝██╔══██╗██║░░░██║
+░╚████╔╝░██║░░██║██║░░░██║
+░░╚██╔╝░░██║░░██║██║░░░██║
+░░░██║░░░╚█████╔╝╚██████╔╝
+░░░╚═╝░░░░╚════╝░░╚═════╝░
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="https://www.facebook.com/swordigo.swordslush">
+<meta name="description" content="This API is specifically designed for educational purposes, helping students and educators access valuable tools and resources to enhance learning and teaching experiences. Ideal for academic research, and classroom activities.">
+<meta property="og:description" content="An educational API created to support students and educators in improving learning and teaching through accessible tools and resources.">
+<meta property="og:url" content="https://betadash-api-swordslush.vercel.app:443"/>
+        <meta property="og:type" content="website"/>
+    <meta property="og:image" content="https://i.imgur.com/Tr4sEdl.jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+ <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+<meta property="og:site_name" content="REST-API-DOCS"/>
+  <meta name="theme-color" content="#13111C"/>
+<meta name='application-name' content='API-DOCS'>
+<meta name='og:title' content='REST-API-DOCS'>
+    <title>REST-API-DOCS</title>
+<link rel="icon" href="https://i.ibb.co/Jk4Sdpg/e1d9f938-b686-49fd-95e2-95200565d4ec-removebg-preview.png" />
+    <link rel="shortcut icon" href="https://i.ibb.co/Jk4Sdpg/e1d9f938-b686-49fd-95e2-95200565d4ec-removebg-preview.png" type="image/x-icon" />
+<link rel="apple-touch-icon" href="https://i.imgur.com/Tr4sEdl.jpeg" sizes="57x57"/>
+            <link rel="apple-touch-icon" href="https://i.imgur.com/Tr4sEdl.jpeg" sizes="60x60"/>
+            <link rel="apple-touch-icon" href="https://i.imgur.com/Tr4sEdl.jpeg" sizes="72x72"/>
+            <link rel="apple-touch-icon" href="https://i.imgur.com/Tr4sEdl.jpeg" sizes="76x76"/>
+            <link rel="apple-touch-icon" href="https://i.imgur.com/Tr4sEdl.jpeg" sizes="114x114"/>
+            <link rel="apple-touch-icon" href="https://i.imgur.com/Tr4sEdl.jpeg" sizes="120x120"/>
+            <link rel="apple-touch-icon" href="https://i.imgur.com/Tr4sEdl.jpeg" sizes="144x144"/>
+            <link rel="apple-touch-icon" href="https://i.imgur.com/Tr4sEdl.jpeg" sizes="152x152"/>
+            <link rel="apple-touch-icon" href="https://i.imgur.com/Tr4sEdl.jpeg" sizes="180x180"/>
+   <link rel="preconnect" href="https://betadash-api-swordslush.vercel.app:443">
+    <link rel="manifest" href="/site.webmanifest"/>
+ <link rel="dns-prefetch" href="https://betadash-api-swordslush.vercel.app:443"/>
+<link rel="apple-touch-icon" sizes="180x180" href="https://i.ibb.co/Jk4Sdpg/e1d9f938-b686-49fd-95e2-95200565d4ec-removebg-preview.png"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "url": "https://betadash-api-swordslush.vercel.app:443",
+                "logo": "https://betadash-api-swordslush.vercel.app/logo.svg"
+            }</script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: {
+                            bg: '#1a1a1a',
+                            secondary: '#121212',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<!-- <body>
+<div class="loading" id="loading">
+        <img src="/duck.gif" alt="Loading..." >
+    </div>
+    <script>
+        setTimeout(() => {         
+document.getElementById('loading').style.display = 'none';
+        }, 3500);
+    </script> -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+           opacity: 0;
+           animation: fadeIn 0.8s ease-in-out     forwards;  
+           overflow-x: hidden;
+         }
+
+      @keyframes fadeIn {
+           from {
+           opacity: 0;
+        }
+          to {
+           opacity: 1;
+          }
+       }  
+
+        .loading { position: absolute; display: flex;  justify-content: center; align-items: center; height: 100%; width: 110%; } img { width: 150px; height: auto; }
+
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        #main-content {
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        @media (min-width: 768px) {
+            #sidebar {
+                transform: translateX(0) !important;
+            }
+            #main-content {
+                margin-left: 20rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            #sidebar {
+                transform: translateX(-100%);
+            }
+            body.sidebar-open #sidebar {
+                transform: translateX(0);
+            }
+            body.sidebar-open #overlay {
+                display: block;
+            }
+        }
+
+      .running-cat {
+          position: fixed;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 9999;
+  }
+    </style>
+</head>
+<body class="min-h-screen font-sans flex bg-gray-50 text-gray-900 dark:bg-dark-bg dark:text-white transition-colors duration-200">
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 hidden md:hidden"></div>
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 w-80 bg-white dark:bg-dark-secondary z-30 border-r border-gray-200 dark:border-gray-800">
+        <div class="flex flex-col h-full">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-800">
+                <h2 class="text-lg font-semibold">Yazky API</h2>
+            </div>
+            <div class="p-4">
+                <input type="text" id="api-search" placeholder="Search APIs..." class="w-full p-2 border rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
+            </div>
+            <div class="flex-grow overflow-y-auto p-4" id="sidebar-content"></div>
+        </div>
+    </aside>
+
+    <div id="main-content" class="flex-1 flex flex-col min-h-screen">
+        <header class="bg-white dark:bg-dark-secondary border-b border-gray-200 dark:border-gray-800 py-3 transition-colors duration-200">
+            <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+                <button id="menuButton" class="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-md md:hidden" aria-label="Toggle menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <h1 class="text-lg font-semibold">Dashboard</h1>
+                <button id="themeToggle" class="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-md" aria-label="Toggle theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+<!-- <body> -->
+        <main class="flex-grow overflow-y-auto">
+            <div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+                <section class="bg-white dark:bg-dark-secondary rounded-lg p-6 space-y-4 shadow-sm">
+                    <h2 class="text-xl font-semibold">Welcome to Yazky Rest API</h2>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                        A powerful and free API service offering a wide range of features for developers.
+                    </p>
+                    <div class="space-y-2">
+                        <h3 class="text-lg font-semibold">Getting Started:</h3>
+                        <ol class="list-decimal list-inside text-xs text-gray-600 dark:text-gray-300 space-y-1">
+                            <li>Select API category from sidebar</li>
+                            <li>Choose desired endpoint</li>
+                            <li>Review endpoint documentation</li>
+                            <li>Make GET request to endpoint URL</li>
+                            <li>Process JSON response</li>
+                        </ol>
+                    </div>
+                    <div class="space-y-2 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <h3 class="text-lg font-semibold">Terms of Service:</h3>
+                        <ol class="list-decimal list-inside text-xs text-gray-600 dark:text-gray-300 space-y-1">
+                            <li>Do not flood requests.</li>
+                            <li>The owner can change the terms of this API at any time to maintain API quality.</li>
+                            <li>Please don't attack it, it hurts.</li>
+                            <li>The owner is not responsible for what you do while using this website.</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div class="bg-white dark:bg-dark-secondary rounded-lg p-4 shadow-sm">
+                        <div class="flex items-center gap-2 text-blue-500 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            <h3 class="text-sm text-gray-600 dark:text-gray-400">Total Endpoints</h3>
+                        </div>
+                        <p class="text-2xl font-bold total-endpoints">Loading...</p>
+                    </div>
+                    <div class="bg-white dark:bg-dark-secondary rounded-lg p-4 shadow-sm">
+                        <div class="flex items-center gap-2 text-blue-500 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            </svg>
+                            <h3 class="text-sm text-gray-600 dark:text-gray-400">Total Categories</h3>
+                        </div>
+                        <p class="text-2xl font-bold total-categories">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-white dark:bg-dark-secondary shadow-sm mt-auto border-t border-gray-200 dark:border-gray-800">
+            <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+                <p class="text-center text-sm text-gray-600 dark:text-gray-400">
+                    &copy; <span id="current-year"></span> yazky. All Rights Reserved.
+                </p>
+            </div>
+        </footer>
+    </div>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = {
+                menuButton: document.getElementById('menuButton'),
+                sidebar: document.getElementById('sidebar'),
+                overlay: document.getElementById('overlay'),
+                themeToggle: document.getElementById('themeToggle'),
+                html: document.documentElement
+            };
+
+            initializeTheme(elements.html);
+
+            setupSidebarListeners(elements);
+            setupThemeToggle(elements.themeToggle, elements.html);
+        });
+
+        function initializeTheme(html) {
+            const savedTheme = localStorage.getItem('color-theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                html.classList.add('dark');
+            } else {
+                html.classList.remove('dark');
+            }
+        }
+
+        function setupSidebarListeners({ menuButton, sidebar, overlay }) {
+            menuButton.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+                overlay.classList.toggle('hidden');
+            });
+
+            overlay.addEventListener('click', () => {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768) {
+                    sidebar.classList.remove('-translate-x-full');
+                    overlay.classList.add('hidden');
+                }
+            });
+        }
+
+ function setupThemeToggle(themeToggle, html) {
+            themeToggle.addEventListener('click', () => {
+                html.classList.toggle('dark');
+                localStorage.setItem('color-theme',
+                    html.classList.contains('dark') ? 'dark' : 'light'
+                );
+            });
+        }
+    </script>
+    <script>
+        class YazkyDashboard {
+            constructor() {
+                this.apiCache = new Map();
+                this.sidebar = document.getElementById('sidebar');
+                this.mainContent = document.getElementById('main-content');
+                this.overlay = document.getElementById('overlay');
+                this.menuButton = document.getElementById('menuButton');
+                this.searchInput = document.getElementById('api-search');
+                this.themeToggle = document.getElementById('themeToggle');
+
+                this.isSidebarOpen = false;
+                this.isDesktop = window.innerWidth >= 768;
+
+                this.init();
+            }
+
+            init() {
+                this.startDateTimeUpdate();
+                this.initSidebar();
+                this.initSearch();
+                this.initResizeHandler();
+                this.setupSidebarToggle();
+                this.setupThemeToggle();
+            }
+
+            startDateTimeUpdate() {
+                document.getElementById('current-year').textContent = new Date().getFullYear();
+            }
+
+            async initSidebar() {
+                const sidebarContent = document.getElementById('sidebar-content');
+                const totalEndpointsElement = document.querySelector('.total-endpoints');
+                const totalCategoriesElement = document.querySelector('.total-categories');
+
+                try {
+                    const apiList = this.getApiList();
+                    const categories = this.groupByCategory(apiList);
+                    this.renderCategories(categories, sidebarContent);
+
+                    const totalEndpoints = apiList.length;
+                    const totalCategories = Object.keys(categories).length;
+
+                    totalEndpointsElement.textContent = totalEndpoints;
+                    totalCategoriesElement.textContent = totalCategories;
+
+                    this.setupAccordionListeners();
+                } catch (error) {
+                    console.error('Sidebar initialization error:', error);
+                    sidebarContent.innerHTML = '<p class="text-red-500">Failed to load API categories</p>';
+                }
+            }
+
+            getApiList() {
+                return [
+   { url: "https://yt-video-production.up.railway.app/blackbox?ask=", name: "BLACKBOX AI", description: "AI model for complex problem-solving and decision-making.", category: "AI" },
+   { url: "https://yt-video-production.up.railway.app/blackbox-pro?ask=", name: "BLACKBOX Pro", description: "Automates coding, debugging, and testing with AI precision.", category: "AI" },
+   { url: "https://yt-video-production.up.railway.app/gpt4-omni?ask=&userid=", name: "GPT4o", description: "Gpt4o A smart assistant for personalized AI-driven responses.", category: "AI" },
+   { url: "/gpt4?ask=", name: "ChatGPT4", description: "Gpt4 architecture from openai", category: "AI" },
+   { url: "/gpt4-turbo?message=", name: "GPT4-TURBO", description: "Gpt4 from rapid Api", category: "AI" },
+   { url: "/dreamforth?title=&page=1", name: "DreamForth", description: " searchable dictionary of dream symbols and meanings for users to analyze their dreams easily", category: "Search" },
+   { url: "/gpt3-turbo?question=", name: "GPT3-TURBO", description: "Koala Api", category: "AI" },
+   { url: "/hercai?ask=", name: "Hercai AI", description: "AI model for entertainment queries.", category: "AI" },
+   { url: "/news?q=", name: "News", description: "search Latest news in internet.", category: "Search" },
+   { url: "/prompt-gen", name: "Prompt-Gen", description: "Random-Prompt from Fluxmoose.", category: "Others" },
+   { url: "/goody?ask=", name: "Goody", description: "The world’s AI responsible Ai model", category: "AI" },
+   { url: "/hastebin?upload=", name: "Hastebin", description: "Skyra Hastebin Uploader", category: "Tools" },
+   { url: "/gogo?search=&ep=", name: "GOGO", description: "Anime Tv movies gogo", category: "Search" },
+   { url: "/gogo2?info=", name: "GOGO-INFO", description: "Anime Tv movies gogo", category: "Search" },
+   { url: "/shorten?link=", name: "TINYURL", description: "Url shortener", category: "Tools" },
+   { url: "/spotify/search?q=&apikey=syugg", name: "Spotify-Preview", description: "Preview short Audio spotify", category: "Search" },
+   { url: "/grok-2?ask=", name: "Grok-2", description: "Grok-2, a conversational model from a newer architecture", category: "AI" },
+   { url: "/grok-2-mini?ask=", name: "Grok-2-Mini", description: "A lightweight version of Grok-2", category: "AI" },
+   { url: "https://api-canvass.vercel.app/mark?text=HELLO+WORLD", name: "Mark API", description: "Returns a message based on the text input.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/hack?name=Mark+Zuckerberg&uid=4", name: "Hack API", description: "Simulates a hack operation for a user.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/lexi?text=miss_nakita", name: "Lexi API", description: "Retrieves information based on the specified text.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/trump?text=hi", name: "Trump API", description: "Returns a response based on the text input.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/jessica?text=naglulu", name: "Jessica API", description: "Provides a response based on the given text.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/bbm?text1=magjowa&text2=mamakla", name: "BBM API", description: "Processes two text inputs for a combined result.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/phub?text=Blurd+shit&name=Mark+Zuckerberg&id=4", name: "PHub API", description: "Processes text and user information.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/billboard?text=kupal+kaba", name: "Billboard API", description: "Displays a message on a billboard.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/rainbow?userid=4", name: "Rainbow API", description: "Shows a rainbow effect for the specified user.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/blink?userid=4", name: "Blink API", description: "Blinks content for a given user.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/einstein?text=kupal", name: "Einstein API", description: "Provides a response based on the given text.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/slap?batman=4&superman=5", name: "Slap API", description: "Simulates a slap interaction between Batman and Superman.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/rip?userid=4", name: "RIP API", description: "Displays a RIP message for the specified user.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/affect?userid=4", name: "Affect API", description: "Displays an affect status for the specified user.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/beautiful?userid=4", name: "Beautiful API", description: "Displays a beautiful status for the specified user.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/simpson?text=kupal+kayo", name: "SIMPSON API", description: "Displays a Presentation image in specified text.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/paint?userid=4", name: "Paint API", description: "Displays a paint action for the specified user.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/clown?userid=4", name: "Clown API", description: "Displays a clown status for the specified user.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/trash?userid=4", name: "Trash API", description: "Displays a trash status for the specified user.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/hitler?userid=4", name: "Hitler API", description: "Displays a Hitler status for the specified user.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/kiss?userid1=4&userid2=5", name: "Kiss API", description: "Displays a kiss interaction between two users.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/jail?userid=4", name: "Jail API", description: "Displays a jail status for the specified user.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/spank?uid1=4&uid2=5", name: "Spank API", description: "Displays a spank interaction between two users.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/wanted?userid=4", name: "Wanted API", description: "Displays a wanted status for the specified user.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/enrile?text=enrile+said:+KUPAL", name: "Enrile API", description: "Displays the response for the query related to Enrile.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/board?text=KUPAL+KABA", name: "Board API", description: "Provides the response for the board query.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/triggered?userid=4", name: "Triggered API", description: "Provides the response for the triggered query based on userid.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/adpic?userid=4", name: "Ad Pic API", description: "Provides the response for the ad picture query based on userid.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/deepfry?userid=4", name: "Deepfry API", description: "Provides the response for the deepfry query based on userid.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/drake?text1=matulog&text2=mag+code", name: "Drake API", description: "Provides the response for the drake with two query text1 | text2.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/snyder?userid=4", name: "Snyder API", description: "Provides the response for the Snyder query based on userid.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/tattoo?userid=4", name: "Tattoo API", description: "Provides the response for the tattoo query based on userid.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/profile?uid=4", name: "Profile API", description: "Provides the response for the profile based on uid.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/pooh?text1=backend&text2=frontend", name: "Pooh API", description: "Provides the response for the pooh based on two query's needed text.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/delete?userid=4", name: "Delfile API", description: "Provides the response for the delete file canvas based on userid.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/circle?userid=4", name: "Circle API", description: "Provides the response for the circle photo canvas based on userid.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/marcos?text=isang+sakung+bigas+bawat+pamilya", name: "Marcos API", description: "Provides the response for the Marcos API based on the text parameter.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/jesus?text=Anak+tigilan+muna+kakalulu", name: "Jesus API", description: "Provides the response for the Jesus API based on the text parameter.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/fuck?one=100027399343135&two=100082748880815", name: "Fuck API", description: "Provides the response for the Fuck API based on the parameters one and two.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/hug?one=4&two=5", name: "Hug API", description: "Provides the response for the Hug API based on the parameters one and two.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/hug2?one=4&two=5", name: "Hug2 API", description: "Provides the response for the Hug2 API based on the parameters one and two.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/sponge?userid=4", name: "Sponge API", description: "Provides the response for the Sponge API based on the userid parameter.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/kiss2?one=4&two=5", name: "Kiss2 API", description: "Provides the response for the Kiss2 API based on the parameters one and two.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/pacquiao?one=4&two=5", name: "Pacquiao API", description: "Provides the response for the Pacquiao API based on the parameters one and two.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/pet?userid=4", name: "Pet API", description: "Provides the response for the Pet API based on the parameter userid.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/nokia?userid=4", name: "Nokia API", description: "Provides the response for the Nokia API based on the parameter userid.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/www?userid1=4&userid2=5", name: "WWW API", description: "Provides the response for the WWW API based on the parameters userid1 and userid2.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/arrest?one=4&two=6", name: "Arrest API", description: "Provides the response for the arrest API based on the parameters one and two.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/luna?text=Isa+Kang+Kupal", name: "Luna API", description: "Provides a response based on the text parameter.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/condolence?username=Mark+Zuckerberg&uid=4", name: "Condolence API", description: "Sends condolences to the specified username and user ID.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/rankcard?name=CliffBot&userid=100065005240232&currentLvl=4&currentRank=1&currentXP=100&requiredXP=7363", name: "Rank Card API", description: "Provides the response for the rank card API based on the user ID, level, rank, current XP, and required XP.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/rankcard2?name=CliffBot&userid=100065005240232&currentLvl=4&currentRank=1&currentXP=100&requiredXP=7363", name: "Rank Card 2 API", description: "Provides the response for the second rank card API with similar parameters: user ID, level, rank, current XP, and required XP.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/nigga?userid=4", name: "Nigga API", description: "Provides the userid to complete the request nigga riding tiger canvas.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/toyab?userid=100081852204977", name: "Eabab API", description: "Provides the userid to complete the request Eabab canvas.", category: "Canvas" },
+    { url: "https://api-canvass.vercel.app/christmas?name=Kupal", name: "Snow globe", description: "Provides the query name to complete the request Snow globe canvas.", category: "Canvas" },
+   { url: "https://api-canvass.vercel.app/monalisa?userid=4", name: "Monalisa", description: "Generate monalisa-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/city-billboard?userid=4", name: "City Billboard", description: "Generate city-billboard-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/night-sword?userid=4", name: "Night Sword", description: "Generate night-sword-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/christmas-present?userid=4", name: "Christmas Present", description: "Generate christmas-present-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/bunny?userid=4", name: "Bunny", description: "Generate bunny-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/snowfall?userid=4", name: "Snowfall", description: "Generate snowfall-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/albert?text=1+1=2", name: "Albert", description: "Generate albert-canvas for the specified text", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/gambler?userid=4", name: "Gambler", description: "Generate gambler-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/xmas-cap?userid=4", name: "Xmas Cap", description: "Generate xmas-cap-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/campaign?userid=4", name: "Campaign", description: "Generate campaign-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/night-motion?userid=4", name: "Night Motion", description: "Generate night-motion-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/missing?userid=4&name=Mark+Zuckerberg&number=098737365", name: "Missing", description: "Generate missing-canvas for the specified userid, name, and number", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/witch?userid=4", name: "Witch", description: "Generate witch-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/vampire?userid=4", name: "Vampire", description: "Generate vampire-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/clapper-board?userid=4&production=Yazky&director=kaizen&cameraman=Churchill&date=2.05.8&scene=2&take=7", name: "Clapper Board", description: "Generate clapper-board-canvas for the specified userid, production, director, cameraman, date, scene, and take", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/calendar?userid=4", name: "Calendar", description: "Generate calendar-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/melbourne?userid=4", name: "Melbourne", description: "Generate melbourne-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/night-streetv2?userid=4", name: "Night Streetv2", description: "Generate night-streetv2-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/big-screen?userid=4", name: "Big Screen", description: "Generate big-screen-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/old-tv?userid=4", name: "Old TV", description: "Generate old-tv-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/festive-greeting?userid=4&text=", name: "Festive Greeting", description: "Generate festive-greeting-canvas for the specified userid and text", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/christmas-list?list=mga+bakla&text1=&text2=&text3=&text4=", name: "Christmas List", description: "Generate christmas-list-canvas for the specified list, text1, text2, text3, and text4", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/bad-santa?userid=4", name: "Bad Santa", description: "Generate bad-santa-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/santas-parcel?userid=4&text=Merry+Christmas", name: "Santa's Parcel", description: "Generate santas-parcel-canvas for the specified userid and text", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/worker-billboard?userid=4", name: "Worker Billboard", description: "Generate worker-billboard-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/passage?userid=4", name: "Passage", description: "Generate passage-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/wall-poster?userid=4", name: "Wall Poster", description: "Generate wall-poster-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/night-street?userid=4&text=Chill+Guy", name: "Night Street", description: "Generate night-street-canvas for the specified userid and text", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/concrete?userid=4", name: "Concrete", description: "Generate concrete-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/new-world?userid=4&text=Chill+Guy", name: "New World", description: "Generate new-world-canvas for the specified userid and text", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/Lafayette?userid=4", name: "Lafayette", description: "Generate lafayette-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/frosty-window?userid=4", name: "Frosty Window", description: "Generate frosty-window-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/snow-writing?text1=Merry&text2=Christmas", name: "Snow Writing", description: "Generate snow-writing-canvas for the specified text1 and text2", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/christmas-writing?text=Merry+Christmas", name: "Christmas Writing", description: "Generate christmas-writing-canvas for the specified text", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/shopping-arcade?userid=4", name: "Shopping Arcade", description: "Generate shopping-arcade-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/light-writing?text=merry+Christmas", name: "Light Writing", description: "Generate light-writing-canvas for the specified text", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/zombie?userid=4", name: "Zombie", description: "Generate zombie-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/conference?userid=4", name: "Conference", description: "Generate conference-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/puzzle?userid=4", name: "Puzzle", description: "Generate puzzle-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/football-field?userid=4", name: "Football Field", description: "Generate football-field-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/kitty?userid=4", name: "Kitty", description: "Generate kitty-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/dorm-lights?userid=4", name: "Dorm Lights", description: "Generate dorm-lights-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/jigsaw-puzzle?userid=4", name: "Jigsaw Puzzle", description: "Generate jigsaw-puzzle-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/latte-art?userid=4", name: "Latte Art", description: "Generate latte-art-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/truck-advert?userid=4", name: "Truck Advert", description: "Generate truck-advert-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/concert?userid=4", name: "Concert", description: "Generate concert-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/breaking-news?userid=4&channel=TCH&title=Mark+Zuckerberg&headline=Meta+announces+a+new+AI+platform", name: "Breaking News", description: "Generate breaking-news-canvas for the specified userid, channel, title, and headline", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/cupid?userid=4", name: "Cupid", description: "Generate cupid-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/putin?userid=4", name: "Putin", description: "Generate putin-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/obama?userid=4", name: "Obama", description: "Generate obama-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/night-city?userid=4", name: "Night City", description: "Generate night-city-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/shop-poster?userid=4", name: "Shop Poster", description: "Generate shop-poster-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/odessa?userid=4", name: "Odessa", description: "Generate odessa-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/wanted-poster?userid=4&name=Mark+Zuckerberg&reward=50000", name: "Wanted Poster", description: "Generate wanted-poster-canvas for the specified userid, name, and reward", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/cafe?userid=4", name: "Cafe", description: "Generate cafe-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/underground?userid=4", name: "Underground", description: "Generate underground-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/tulips?userid=4", name: "Tulips", description: "Generate tulips-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/snow-london?userid=4", name: "Snow London", description: "Generate snow-london-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/sidewalk?userid=4", name: "Sidewalk", description: "Generate sidewalk-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/snow-city?userid=4", name: "Snow City", description: "Generate snow-city-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/last-advert?userid=4", name: "Last Advert", description: "Generate last-advert-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/broadway?userid=4", name: "Broadway", description: "Generate broadway-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/city-light?userid=4", name: "City Light", description: "Generate city-light-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/artist?userid=4", name: "Artist", description: "Generate artist-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/oxford?userid=4", name: "Oxford", description: "Generate oxford-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/london-calling?userid=4", name: "London Calling", description: "Generate london-calling-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/goats?userid=4", name: "Goats", description: "Generate goats-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/vintage?userid=4", name: "Vintage", description: "Generate vintage-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/art-expert?userid=4", name: "Art Expert", description: "Generate art-expert-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/london-gallery?userid=4", name: "London Gallery", description: "Generate london-gallery-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/painting-snap?userid=4", name: "Painting Snap", description: "Generate painting-snap-canvas for the specified userid", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/trump?userid=4&text=Target+Lock", name: "Trump", description: "Generate trump-canvas for the specified userid and text", category: "Canvas" },
+{ url: "https://api-canvass.vercel.app/captivity?userid=4", name: "Captivity", description: "Generate captivity-canvas for the specified userid", category: "Canvas" },
+{ url: "https://yt-video-production.up.railway.app/insta?url=", name: "Insta", description: "Instagram reels downloader", category: "Downloader" },
+{ url: "https://betadash-search-download.vercel.app/soundcloud?url=", name: "SCDL", description: "SoundCloud downloader", category: "Downloader" },
+{ url: "https://betadash-search-download.vercel.app/ytdl?url=", name: "YTDL", description: "YouTube downloader", category: "Downloader" },
+{ url: "https://betadash-search-download.vercel.app/fbdl?url=", name: "FBDL", description: "Facebook downloader", category: "Downloader" },
+{ url: "https://betadash-search-download.vercel.app/capcutdl?link=", name: "CapCutDL", description: "CapCut downloader", category: "Downloader" },
+{ url: "https://betadash-search-download.vercel.app/api/tiktok?link=", name: "TikTok", description: "TikTok downloader", category: "Downloader" },
+{ url: "https://betadash-search-download.vercel.app/spotifydl?url=", name: "SpotifyDL", description: "Spotify downloader", category: "Downloader" },
+{ url: "https://betadash-search-download.vercel.app/wattpad?search=", name: "Wattpad", description: "Wattpad search", category: "Search" },
+{ url: "https://betadash-search-download.vercel.app/tiksearchv2?search=&count=", name: "TikSearchV2", description: "TikTok search v2", category: "Search" },
+{ url: "https://betadash-search-download.vercel.app/tiksearch?search=", name: "TikSearch", description: "TikTok search", category: "Search" },
+{ url: "https://betadash-search-download.vercel.app/videov2?search=", name: "VideoV2", description: "Video search from youtube", category: "Search" },
+{ url: "https://betadash-search-download.vercel.app/sc?search=", name: "SoundCloud", description: "SoundCloud search", category: "Music" },
+{ url: "https://betadash-uploader.vercel.app/pinterest?search=&count=", name: "Pinterest", description: "Pinterest search", category: "Image generation" },
+{ url: "https://betadash-search-download.vercel.app/spt?search=", name: "SPT", description: "Spotify search", category: "Music" },
+{ url: "https://betadash-uploader.vercel.app/unsplash?search=&count=1", name: "Unsplash", description: "Unsplash search image", category: "Image generation" },
+{ url: "https://betadash-search-download.vercel.app/tikboost?username=&link=", name: "TikBoost", description: "TikTok booster", category: "Tools" },
+{ url: "https://betadash-search-download.vercel.app/tikstalk?username=", name: "TikStalk", description: "TikTok stalker", category: "Tools" },
+{ url: "https://betadash-uploader.vercel.app/ddos/site/spam?link=", name: "DDos Spam", description: "DDOS simple website spam", category: "Tools" },
+{ url: "https://betadash-uploader.vercel.app/emojimix?emoji1=&emoji2=", name: "EmojiMix", description: "Emoji mixer", category: "Tools" },
+{ url: "https://betadash-uploader.vercel.app/fbshare?link=&token=&amount=&speed=", name: "FBShare", description: "Facebook share booster", category: "Tools" },
+{ url: "https://betadash-uploader.vercel.app/follow?accountID=&accessToken=", name: "Follow", description: "Follow boost", category: "Tools" },
+{ url: "https://betadash-uploader.vercel.app/imgur?link=", name: "Imgur", description: "Imgur uploader", category: "Tools" },
+{ url: "https://betadash-uploader.vercel.app/guard?token=&enable=", name: "Guard", description: "Guard tool", category: "Tools" },
+{ url: "https://betadash-uploader.vercel.app/lookup?fblink=", name: "Lookup", description: "Facebook lookup", category: "Tools" },
+{ url: "https://betadash-uploader.vercel.app/remini?url=", name: "Remini", description: "Remini tool", category: "Tools" },
+{ url: "https://betadash-uploader.vercel.app/removebg?url=", name: "RemoveBG", description: "Remove background tool", category: "Tools" },
+{ url: "https://betadash-uploader.vercel.app/translate?text=&lang=", name: "Translate", description: "Translation tool", category: "Tools" },
+{ url: "https://betadash-search-download.vercel.app/tiktrend", name: "TikTrend", description: "TikTok trending", category: "Others" },
+{ url: "https://betadash-shoti-yazky.vercel.app/shotizxx?apikey=shipazu", name: "Shoti", description: "Random eabab", category: "Others" },
+  {
+    url: "https://yt-video-production.up.railway.app/videov2?search=",
+    name: "Video",
+    description: "Search video from YouTube",
+    category: "Search"
+  },
+  {
+    url: "https://yt-video-production.up.railway.app/yt?search=",
+    name: "YT",
+    description: "Search from YouTube",
+    category: "Search"
+  },
+{
+    url: "/humanize?text=",
+    name: "Humanizer",
+    description: "Humanize text not detected an Ai created",
+    category: "AI"
+  },
+{
+    url: "/aidetect?text=",
+    name: "Ai detect",
+    description: "aidetector rating for ai created or not",
+    category: "AI"
+  },
+{
+    url: "https://yt-video-production.up.railway.app/ytdlv2?url=",
+    name: "YTDL-V2",
+    description: "Youtube downloader mp4 and mp3",
+    category: "Downloader"
+  },
+{
+    url: "https://yt-video-production.up.railway.app/ytdlv3?url=",
+    name: "YTDL-V3",
+    description: "Youtube downloader",
+    category: "Downloader"
+  },
+{
+    url: "/info?ip=",
+    name: "Ip Address",
+    description: "IP ADDRESS INFO",
+    category: "Search"
+  },
+{
+    url: "/github?username=",
+    name: "Github",
+    description: "Github search information",
+    category: "Search"
+  },
+{
+    url: "https://yt-video-production.up.railway.app/spamsms?number=&count=&interval=",
+    name: "Smsbomb",
+    description: "Smsbomb number",
+    category: "Tools"
+  },
+{
+    url: "/imgbb?url=",
+    name: "Imgbb",
+    description: "Imgbb uploader to get the url",
+    category: "Tools"
+  },
+{
+    url: "https://yt-video-production.up.railway.app/scrape?url=",
+    name: "Scrape",
+    description: "Scraping website only html and headers",
+    category: "Tools"
+  },
+{
+    url: "https://yt-video-production.up.railway.app/zombie?url=",
+    name: "Zombiev2",
+    description: "Generate canvas zombie face",
+    category: "Canvas"
+  },
+{
+    url: "/reddit?url=",
+    name: "Reddit",
+    description: "Reddit downloader ",
+    category: "Downloader"
+  },
+{
+    url: "/snapchat?url=",
+    name: "Snapchat",
+    description: "Snapchat downloader ",
+    category: "Downloader"
+  },
+{
+    url: "https://api-canvass.vercel.app/johnny?text=lexi+imissyou",
+    name: "Johnny",
+    description: "Generate canvas johnny post",
+    category: "Canvas"
+  },
+{
+    url: "https://api-canvass.vercel.app/bogart?text=magnanakaw+ako+ng+web+HAHA+kahit+lagyan+nyopa+ng+anti+bogart",
+    name: "Bogart",
+    description: "Generate canvas Bogart post",
+    category: "Canvas"
+  },
+{
+    url: "https://api-canvass.vercel.app/mems?text1=black+people+is+very+kind&text2=nigga",
+    name: "Mems",
+    description: "Generate canvas Mems compare text",
+    category: "Canvas"
+  },
+{
+    url: "https://api-canvass.vercel.app/slapv2?one=4&two=5",
+    name: "Slapv2",
+    description: "Generate canvas fighting slap",
+    category: "Canvas"
+  },
+{
+    url: "https://api-canvass.vercel.app/fampair?mother=100082748880815&father=100048892837161&son=100087212564100",
+    name: "Fampair",
+    description: "Generate canvas Family pair",
+    category: "Canvas"
+  },
+{
+    url: "https://api-canvass.vercel.app/gay?uid1=100015801404865&uid2=61567565900685",
+    name: "Gay",
+    description: "Generate canvas Bisexual",
+    category: "Canvas"
+  },
+{
+    url: "/image?search=",
+    name: "Pexel",
+    description: "generate image pexel",
+    category: "Image generation"
+  },
+{
+    url: "/flux?prompt=",
+    name: "Flux",
+    description: "generate image from flux pro replicate ",
+    category: "Image generation"
+  },
+{
+    url: "https://yt-video-production.up.railway.app/Aria?q=hi&userid=4",
+    name: "Aria",
+    description: "Aria ai in opera browser",
+    category: "AI",
+    url: "https://yt-video-production.up.railway.app/upscale?imageUrl=",
+    name: "Upscale",
+    description: "Enhancing image",
+    category: "Tools"
+  },
+{
+    url: "/imgurv2?imageUrl=",
+    name: "Imgurv2",
+    description: "upload image to imgur",
+    category: "Tools"
+  },
+/** {
+    url: "https://yt-video-production.up.railway.app/sharpen?imageUrl=",
+    name: "Sharpen",
+    description: "Sharpening image",
+    category: "Tools"
+},
+{
+    url: "https://yt-video-production.up.railway.app/color-enhance?imageUrl=",
+    name: "Color Enhance",
+    description: "Enhancing image colors",
+    category: "Tools"
+},
+{
+    url: "https://yt-video-production.up.railway.app/text-remover?imageUrl=",
+    name: "Text Remover",
+    description: "Removing text from image",
+    category: "Tools"
+},
+{
+    url: "https://yt-video-production.up.railway.app/retouch?imageUrl=",
+    name: "Retouch",
+    description: "Retouching image",
+    category: "Tools"
+},
+{
+    url: "https://yt-video-production.up.railway.app/background-remove?imageUrl=",
+    name: "Background Remove",
+    description: "Removing background from image",
+    category: "Tools"
+},
+{
+    url: "https://yt-video-production.up.railway.app/unblur?imageUrl=",
+    name: "Unblur",
+    description: "Unblurring image",
+    category: "Tools"
+},
+{
+    url: "https://yt-video-production.up.railway.app/watermark-remove?imageUrl=",
+    name: "Watermark Remove",
+    description: "Removing watermark from image",
+    category: "Tools"
+}, 
+{
+    url: "https://yt-video-production.up.railway.app/restore?imageUrl=",
+    name: "Restore",
+    description: "Restoring image",
+    category: "Tools"
+},  **/
+{
+    url: "/lyrics-finder?title=",
+    name: "Lyrics",
+    description: "Lyrics Finder music",
+    category: "Search"
+},
+{
+    url: "https://yt-video-production.up.railway.app/gemini-1.5-pro?ask=",
+    name: "Gemini-1.5",
+    description: "Large language model trained by Google",
+    category: "AI"
+},
+{
+    url: "/panda?ask=",
+    name: "Panda",
+    description: "Panda ai personal assistant",
+    category: "AI"
+},
+{
+    url: "/therapist?ask=",
+    name: "Therapist",
+    description: "Personal assistant Lotus 2.0! therapist Ai",
+    category: "AI"
+},
+{
+    url: "https://yt-video-production.up.railway.app/recognize?fileUrl=",
+    name: "Recognize",
+    description: "Recognize Music mp3 & mp4",
+    category: "Tools"
+},
+{
+    url: "/freepik?search=",
+    name: "Freepik",
+    description: "image search from freepik",
+    category: "Image generation"
+},
+{
+    url: "/lens?imageUrl=",
+    name: "Lens",
+    description: "Ai reverse image search",
+    category: "Search"
+},
+/** {
+    url: "/kimi?ask=",
+    name: "Kimi Ai",
+    description: "Kimi powered by moonshot",
+    category: "AI"
+}, **/
+   {
+        "url": "https://yt-video-production.up.railway.app/Llama90b?ask=",
+        "name": "Llama90b",
+        "description": "Multimodal large language model developed by Meta",
+        "category": "AI"
+    },
+    {
+        "url": "https://yt-video-production.up.railway.app/qwen?ask=",
+        "name": "Qwen",
+        "description": "Large language model developed by Alibaba",
+        "category": "AI"
+    },
+    {
+        "url": "https://yt-video-production.up.railway.app/Llama70b?ask=",
+        "name": "Llama70b",
+        "description": "Large language model developed by Meta",
+        "category": "AI"
+    },
+    {
+        "url": "https://yt-video-production.up.railway.app/Deepseek-R1?ask=",
+        "name": "Deepseek-R1",
+        "description": "Large language model developed by DeepSeek",
+        "category": "AI"
+    },
+    {
+        "url": "https://yt-video-production.up.railway.app/mistral?ask=",
+        "name": "Mistral",
+        "description": "Large language model developed by Mistral AI",
+        "category": "AI"
+    },
+    {
+        "url": "https://yt-video-production.up.railway.app/wizard?ask=",
+        "name": "Wizard",
+        "description": "Advanced AI assistant model",
+        "category": "AI"
+    },
+    {
+        "url": "https://yt-video-production.up.railway.app/phi?ask=",
+        "name": "Phi",
+        "description": "AI model developed by Microsoft",
+        "category": "AI"
+    },
+    {
+        "url": "https://yt-video-production.up.railway.app/Deepseek-V3?ask=",
+        "name": "Deepseek-V3",
+        "description": "Large language model developed by DeepSeek",
+        "category": "AI"
+    },
+   
+    {
+        "url": "https://yt-video-production.up.railway.app/duck-mixtral?ask=",
+        "name": "Duck-Mixtral",
+        "description": "Mixtral model integrated with DuckDuckGo",
+        "category": "AI"
+    },
+    {
+        "url": "https://yt-video-production.up.railway.app/duck-gpt-4o?ask=",
+        "name": "Duck-GPT-4o",
+        "description": "GPT-4o model integrated with DuckDuckGo",
+        "category": "AI"
+    },
+    {
+        "url": "https://yt-video-production.up.railway.app/duck-claude?ask=",
+        "name": "Duck-Claude-3",
+        "description": "Claude 3 Haiku model integrated with DuckDuckGo",
+        "category": "AI"
+    },
+    {
+        "url": "https://yt-video-production.up.railway.app/duck-o3-mini?ask=",
+        "name": "Duck-O3-Mini",
+        "description": "Ollama's O3 Mini model integrated with DuckDuckGo AI",
+        "category": "AI"
+    },
+    {
+        "url": "https://yt-video-production.up.railway.app/meta-llama?ask=",
+        "name": "Duck-Meta-Llama",
+        "description": "Meta's Llama model integrated with DuckDuckGo",
+        "category": "AI"
+    },
+     /**               
+       {
+        "url": "/spotify?info=",
+        "name": "Spotify",
+        "description": "Spotify All info playlist, artist, songname, preview, etc...",
+        "category": "Search"
+    }, 
+    {
+        "url": "/sptv2?search=",
+        "name": "Spotify",
+        "description": "Search Spotify music",
+        "category": "Music"
+    }, **/
+    {
+        "url": "https://yt-video-production.up.railway.app/QwQ?ask=",
+        "name": "QwQ",
+        "description": "Qwen/QwQ-32B research model developed by the Qwen Team",
+        "category": "AI"
+    },
+     {
+        "url": "/ytdlv4?url=&format=",
+        "name": "YTDL-V4",
+        "description": "Youtube downloader",
+        "category": "Downloader"
+    },               
+    {
+        "url": "/ytdlv5?url=",
+        "name": "YTDL-V5",
+        "description": "Youtube downloader",
+        "category": "Downloader"
+    },               
+     {
+        "url": "/pintedl?url=",
+        "name": "PinteDl",
+        "description": "Pinterest downloader",
+        "category": "Downloader"
+    },
+     {
+        "url": "https://yt-video-production.up.railway.app/Aria?q=&userid=",
+        "name": "Aria Ai",
+        "description": "A powerful Ai assistant built right into Opera browser",
+        "category": "AI"
+    },
+    {
+        "url": "https://yt-video-production.up.railway.app/brave?search=",
+        "name": "Brave",
+        "description": "A privacy-focused search engine developed by Brave Software",
+        "category": "AI"
+    },
+     {
+        "url": "/ocr?url=",
+        "name": "Ocr",
+        "description": "Convert image/webp/PDF to text",
+        "category": "Tools"
+    },               
+     {
+        "url": "/zerogpt?ask=",
+        "name": "Zerogpt",
+        "description": "A cutting-edge language model designed to generate human-like text",
+        "category": "AI"
+    },
+      {
+        "url": "/lepton?search=",
+        "name": "Lepton",
+        "description": "Lepton search info with source",
+        "category": "Search"
+    },
+    {
+        "url": "/mixtral-nemo?ask=",
+        "name": "Mixtral-Nemo",
+        "description": "A powerful AI model optimized for efficiency",
+        "category": "AI"
+    },
+    {
+        "url": "/copilot?ask=",
+        "name": "Github-Copilot",
+        "description": "AI-powered code completion tool developed by GitHub",
+        "category": "AI"
+    },
+    {
+        "url": "/ytmp3?url=",
+        "name": "YTmp3",
+        "description": "Youtube mp3 downloader",
+        "category": "Downloader"
+    },
+    {
+        "url": "/instav2?url=",
+        "name": "InstaV2",
+        "description": "Instagram video downloader",
+        "category": "Downloader"
+    },
+    {
+        "url": "/allenai?ask=&model=",
+        "name": "Allenai",
+        "description": "AI-powered research platform",
+        "category": "AI"
+    },    
+    {
+        "url": "https://yt-video-production.up.railway.app/you?chat=",
+        "name": "You",
+        "description": "AI-powered search engine",
+        "category": "AI"
+    },
+     {
+        "url": "/fluxwebui?prompt=",
+        "name": "Fluxwebui",
+        "description": "Generate High quality image from flux",
+        "category": "Image generation"
+    },
+    {
+        "url": "/qudata?ask=",
+        "name": "Qudata",
+        "description": "AI assistant is equipped with extensive knowledge on a variety of topics",
+        "category": "AI"
+    },
+    {
+        "url": "/Le?chat=&userid=",
+        "name": "Le Chat",
+        "description": "Chat with Mistral AI's cutting edge language models.",
+        "category": "AI"
+    },    
+   ];
+            }
+
+            groupByCategory(apiList) {
+                return apiList.reduce((acc, api) => {
+                    (acc[api.category] = acc[api.category] || []).push(api);
+                    return acc;
+                }, {});
+            }
+
+            renderCategories(categories, container) {
+                Object.entries(categories).sort((a, b) => a[0].localeCompare(b[0])).forEach(([category, items]) => {
+                    if (items.length > 0) {
+                        container.appendChild(this.createAccordion(category, items));
+                    }
+                });
+            }
+
+            createAccordion(category, items) {
+                const accordion = document.createElement('div');
+                accordion.className = 'accordion mb-2';
+                accordion.innerHTML = `
+                    <button class="accordion-header w-full text-left flex justify-between items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md" aria-expanded="false">
+                        <span class="font-medium">${this.capitalizeFirstLetter(category)}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div class="accordion-content hidden pl-4 space-y-1">
+                        ${items.sort((a, b) => a.name.localeCompare(b.name)).map(item => `
+                            <div class="api-item p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md cursor-pointer" onclick="dashboard.useApi('${item.url}')">
+                                <div class="text-sm">${this.capitalizeFirstLetter(item.name)}</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">${item.description}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                return accordion;
+            }
+
+
+            setupAccordionListeners() {            
+document.querySelectorAll('.accordion-header').forEach(header => {
+                    header.addEventListener('click', this.handleAccordionClick);
+                });
+            }
+
+            handleAccordionClick(e) {
+                e.stopPropagation();
+                const header = e.currentTarget;
+                const content = header.nextElementSibling;
+                const arrow = header.querySelector('svg');
+                const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+                document.querySelectorAll('.accordion-header[aria-expanded="true"]').forEach(otherHeader => {
+                    if (otherHeader !== header) {
+                        otherHeader.setAttribute('aria-expanded', 'false');
+                        otherHeader.nextElementSibling.classList.add('hidden');
+                        otherHeader.querySelector('svg').classList.remove('rotate-180');
+                    }
+                });
+
+                header.setAttribute('aria-expanded', !isExpanded);
+                content.classList.toggle('hidden');
+                arrow.classList.toggle('rotate-180');
+            }
+
+            setupSidebarToggle() {
+                this.menuButton.addEventListener('click', () => this.toggleSidebar());
+                this.overlay.addEventListener('click', () => this.closeSidebar());
+            }
+
+            toggleSidebar() {
+                if (!this.isDesktop) {
+                    this.isSidebarOpen = !this.isSidebarOpen;
+                    this.updateSidebarState();
+                }
+            }
+
+            closeSidebar() {
+                if (!this.isDesktop) {
+                    this.isSidebarOpen = false;
+                    this.updateSidebarState();
+                }
+            }
+
+            updateSidebarState() {
+                if (!this.isDesktop) {
+                    document.body.classList.toggle('sidebar-open', this.isSidebarOpen);
+                    this.overlay.classList.toggle('hidden', !this.isSidebarOpen);
+                    this.sidebar.style.transform = this.isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)';
+                }
+            }
+
+            initSearch() {
+                this.searchInput.addEventListener('input', this.handleSearch.bind(this));
+            }
+
+            handleSearch(event) {
+                const searchTerm = event.target.value.toLowerCase();
+                const isSearchEmpty = searchTerm === '';
+
+                document.querySelectorAll('.accordion').forEach(accordion => {
+                    const items = accordion.querySelectorAll('.api-item');
+                    let hasVisibleItems = false;
+
+                    items.forEach(item => {
+                        const name = item.querySelector('.text-sm').textContent.toLowerCase();
+                        const description = item.querySelector('.text-xs').textContent.toLowerCase();
+
+                        if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                            item.style.display = '';
+                            hasVisibleItems = true;
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+
+                    if (hasVisibleItems) {
+                        accordion.style.display = '';
+                        accordion.querySelector('.accordion-header').setAttribute('aria-expanded', 'true');
+                        accordion.querySelector('.accordion-content').classList.remove('hidden');
+                        accordion.querySelector('.accordion-header svg').classList.add('rotate-180');
+                    } else {
+                        accordion.style.display = 'none';
+                    }
+
+                    if (isSearchEmpty) {
+                        accordion.querySelector('.accordion-header').setAttribute('aria-expanded', 'false');
+                        accordion.querySelector('.accordion-content').classList.add('hidden');
+                        accordion.querySelector('.accordion-header svg').classList.remove('rotate-180');
+                    }
+                });
+            }
+
+            initResizeHandler() {
+                window.addEventListener('resize', () => {
+                    const wasDesktop = this.isDesktop;
+                    this.isDesktop = window.innerWidth >= 768;
+
+                    if (wasDesktop !== this.isDesktop) {
+                        this.updateSidebarState();
+                    }
+                });
+            }
+
+            setupThemeToggle() {
+                this.themeToggle.addEventListener('click', () => {
+                    setupThemeToggle();
+                });
+            }
+
+            capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+
+            useApi(endpoint) {
+                window.open(endpoint, '_blank', 'noopener,noreferrer');
+            }
+        }
+ document.addEventListener('DOMContentLoaded', () => {
+            window.dashboard = new YazkyDashboard();
+        });   
+    </script>
+<body>   
+<script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
+    <script>
+        let tracks = [
+"https://i.imgur.com/kk4B7S1.mp4",
+"https://raw.github.com/Cliffvincent/Jahzb/main/1000002392.mp4", "https://raw.github.com/Cliffvincent/Jahzb/main/received_1118187456315892.mp3",
+"https://raw.github.com/Cliffvincent/Jahzb/main/received_1295311408321448.mp3",
+"https://raw.github.com/Cliffvincent/Jahzb/main/received_1620148122270392.mp3",
+"https://raw.github.com/Cliffvincent/Jahzb/main/received_2063787320708541.mp3",
+"https://raw.github.com/Cliffvincent/Jahzb/main/received_3851669858409525.mp3",
+"https://raw.github.com/Cliffvincent/Jahzb/main/music.mp3",
+"https://i.imgur.com/eHiNMKc.mp4",
+"https://raw.github.com/Cliffvincent/Jahzb/main/Birthday%20Sex.mp3"
+        ];
+
+        let randomTrack = tracks[Math.floor(Math.random() * tracks.length)];
+
+        let sound = new Howl({
+            src: [randomTrack],
+            autoplay: true,
+            loop: false,
+            format: ["mp3"],
+            volume: 1,
+            onend: () => {},
+        });
+
+        sound.play();
+</script>
+<script>
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12') {
+      e.preventDefault();
+    }
+    if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+      e.preventDefault();
+    }
+    if (e.ctrlKey && e.key === 'u') {
+      e.preventDefault();
+    }
+  });
+</script>
+</body>
+</html>
+
+<!-- CREDITS- SOURCE: LANCE -->
+<!-- MODIFIED: Nov 24, 2024 -->

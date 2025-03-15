@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoti Videos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --white: #ffffff;
+            --black: #000000;
+            --bg: var(--white);
+            --txt: var(--black);
+        }
+
+        body.dark-mode {
+            --bg: var(--black);
+            --txt: var(--white);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--txt);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        #title {
+            text-align: center;
+            margin: 30px 0;
+            font-size: 36px;
+            color: var(--txt);
+            font-weight: 600;
+        }
+
+        #video-container {
+            max-width: 600px;
+            width: 90%;
+            margin: 20px auto;
+            background: linear-gradient(145deg, #282828, #3c3c3c);
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #loading-spinner {
+            border: 8px solid var(--bg);
+            border-top: 8px solid var(--txt);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+        }
+
+        #error-message {
+            color: var(--txt);
+            font-size: 18px;
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #retry-button {
+            background-color: var(--txt);
+            color: var(--bg);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 12px 24px;
+            margin-top: 10px;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            display: none;
+            opacity: 0;
+        }
+
+        #retry-button:hover {
+            transform: scale(1.05);
+        }
+
+        #video-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            width: 100%;
+            gap: 15px;
+        }
+
+        #video-controls button {
+            background-color: var(--txt);
+            color: var(--bg);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 12px 24px;
+            transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+
+        #video-controls button:hover {
+            transform: scale(1.05);
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .checkbox {
+            display: none;
+        }
+
+        .label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            background: var(--txt);
+            border-radius: 5rem;
+            padding: 0.5rem;
+            height: 2.5rem;
+            width: 5rem;
+            font-size: 1.5rem;
+            transition: background 0.5s ease;
+            cursor: pointer;
+        }
+
+        .label .ball {
+            position: absolute;
+            background-color: var(--bg);
+            border-radius: 50%;
+            top: 0.25rem;
+            left: 0.25rem;
+            height: 2rem;
+            width: 2rem;
+            transform: translateX(0);
+            transition: transform 0.3s ease, background-color 0.5s ease;
+        }
+
+        .fa-sun {
+            color: var(--black);
+        }
+
+        .fa-moon {
+            color: var(--white);
+        }
+
+        .checkbox:checked + .label .ball {
+            transform: translateX(2.5rem);
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title">Random Shoti Video</h1>
+    <div id="video-container">
+        <div id="loading-spinner"></div>
+        <video id="video" controls autoplay></video>
+        <div id="error-message"></div>
+        <button id="retry-button">Retry</button>
+        <div id="video-controls">
+            <button id="next-button">Next</button>
+            <button id="play-pause-button">Play/Pause</button>
+            <div class="toggle-container">
+                <input type="checkbox" class="checkbox" id="check">
+                <label class="label" for="check">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon"></i>
+                    <div class="ball"></div>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+<script>
+    const loadingSpinner = document.getElementById('loading-spinner');
+    const errorMessage = document.getElementById('error-message');
+    const videoElement = document.getElementById('video');
+    const retryButton = document.getElementById('retry-button');
+    const videoTimeout = 10000;
+
+    async function getRandomVideo() {
+        try {
+            loadingSpinner.style.display = 'block';
+            errorMessage.style.display = 'none';
+            retryButton.style.display = 'none';
+            videoElement.style.display = 'none';
+            errorMessage.style.opacity = '0';
+            retryButton.style.opacity = '0';
+
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), videoTimeout);
+            const url = '/shotizxx?apikey=shipazu';            
+            const rawResponse = await fetch(url, {
+                method: 'GET',
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (!rawResponse.ok) {
+                throw new Error(`Server error: ${rawResponse.status}`);
+            }
+
+            const content = await rawResponse.json();
+            videoElement.src = content.shotiurl; 
+            videoElement.style.display = 'block';
+        } catch (e) {
+            let errorMsg = "Failed to load video. Please try again later.";
+            if (e.name === 'AbortError') {
+                errorMsg = "Request timed out. Please try again.";
+            } else if (e.message.includes('NetworkError')) {
+                errorMsg = "Network error. Please check your connection and try again.";
+            } else if (e.message.includes('Server error')) {
+                errorMsg = `Server error: ${e.message.split(':')[1]}. Please try again later.`;
+            }
+            errorMessage.textContent = errorMsg;
+            errorMessage.style.display = 'block';
+            retryButton.style.display = 'inline-block';
+            setTimeout(() => {
+                errorMessage.style.opacity = '1';
+                retryButton.style.opacity = '1';
+            }, 10);
+        } finally {
+            loadingSpinner.style.display = 'none';
+        }
+    }
+
+    getRandomVideo();
+
+    retryButton.addEventListener('click', getRandomVideo);
+
+    document.getElementById('next-button').addEventListener('click', getRandomVideo);
+
+    document.getElementById('play-pause-button').addEventListener('click', () => {
+        if (videoElement.paused) {
+            videoElement.play();
+        } else {
+            videoElement.pause();
+        }
+    });
+
+    const checkbox = document.getElementById('check');
+    checkbox.addEventListener('change', () => {
+        document.body.classList.toggle('dark-mode');
+    });
+</script>
+</body>
+</html>
