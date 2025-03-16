@@ -79,12 +79,6 @@ app.get("/dreamforth", async function (req, res) {
   res.sendFile(path.join(__dirname, "/public/downloader/df"));
 });
 
-
-const socketIo = require('socket.io');
-
-const server = require('http').createServer(app);
-const io = socketIo(server);
-
 /**
 let requestCount = 0;
 const countFilePath = path.join(__dirname, 'public','count.json');
