@@ -7801,15 +7801,33 @@ app.get('/shopping-arcade', async (req, res) => {
 });
 
 app.get('/light-writing', async (req, res) => {
-  const text = req.query.text;
+    const {text, base} = req.query;
+    
+    const b = {
+      1: "e",
+      2: "e1",
+      3: "e2",
+      4: "e3",
+      5: "e4"
+    };
 
-if (!text) {
-    return res.status(400).json({ error: "please provide a text first." });
-}
+    if (!text || !base) {
+        return res.status(400).json({ error: "please provide a text and base first." });
+    }
 
-  let data = new FormData();
-  data.append('base', 'e2');
-  data.append('text', text);
+    const nge = parseInt(base);
+    if (isNaN(nge) || !b[nge]) {
+        return res.status(400).json({
+          author: "yazky",
+          error: "Invalid base number",
+          base: b,
+          usage: "/light-writing?text=Hello+World&base=1",
+        });
+      }
+
+      let data = new FormData();
+       data.append('base', base);  
+      data.append('text', text);
 
   let config = {
     method: 'POST',
@@ -12258,6 +12276,770 @@ async function igdl(url) {
 
   return result;
 }
+
+
+app.get('/new-york-street', async (req, res) => {
+  const { userid, image } = req.query;
+
+  if (!userid && !image) {
+    return res.status(400).json({
+      error: "Please provide either a userid or an image.",
+    });
+  }
+
+  try {
+    let imgurResponse;
+
+    if (image) {
+      if (!image.startsWith("http://") && !image.startsWith("https://")) {
+        return res.status(400).json({
+          error: "Invalid image URL. URL must start with http or https.",
+        });
+      }
+      imgurResponse = image;
+    } else {
+      imgurResponse = `https://api-canvass.vercel.app/profile?uid=${userid}`;
+    }
+
+    const imageResponse = await axios.get(imgurResponse, { responseType: "arraybuffer" });
+    const data = new FormData();
+    data.append('image', imageResponse.data, { filename: "image.jpg" });
+
+const lk = "https://m.photofunia.com/categories/all_effects/new-york-street";
+
+    const config = {
+      method: 'POST',
+      url: `${lk}?server=1`,
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Cache-Control': 'max-age=0',
+        'Accept-Language': 'en-US',
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-GPC": "1",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        'Origin': 'https://m.photofunia.com',
+        'Referer': `${lk}`,        
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    const $ = cheerio.load(response.data);
+    const imageUrl = $(".image.full-height-container img").attr("src");
+
+
+if (imageUrl) {
+const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" });
+      res.setHeader("Content-Type", "image/jpeg");
+      finalImageResponse.data.pipe(res);
+    } else {
+      res.status(404).json({ error: 'Image not found.' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+app.get('/wall-mural', async (req, res) => {
+  const { userid, image } = req.query;
+
+  if (!userid && !image) {
+    return res.status(400).json({
+      error: "Please provide either a userid or an image.",
+    });
+  }
+
+  try {
+    let imgurResponse;
+
+    if (image) {
+      if (!image.startsWith("http://") && !image.startsWith("https://")) {
+        return res.status(400).json({
+          error: "Invalid image URL. URL must start with http or https.",
+        });
+      }
+      imgurResponse = image;
+    } else {
+      imgurResponse = `https://api-canvass.vercel.app/profile?uid=${userid}`;
+    }
+
+    const imageResponse = await axios.get(imgurResponse, { responseType: "arraybuffer" });
+    const data = new FormData();
+    data.append('image', imageResponse.data, { filename: "image.jpg" });
+
+const lk = "https://m.photofunia.com/categories/all_effects/wall-mural";
+
+    const config = {
+      method: 'POST',
+      url: `${lk}?server=1`,
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Cache-Control': 'max-age=0',
+        'Accept-Language': 'en-US',
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-GPC": "1",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        'Origin': 'https://m.photofunia.com',
+        'Referer': `${lk}`,        
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    const $ = cheerio.load(response.data);
+    const imageUrl = $(".image.full-height-container img").attr("src");
+
+
+if (imageUrl) {
+const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" });
+      res.setHeader("Content-Type", "image/jpeg");
+      finalImageResponse.data.pipe(res);
+    } else {
+      res.status(404).json({ error: 'Image not found.' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+
+
+app.get('/playful-cat', async (req, res) => {
+  const { userid, image } = req.query;
+
+  if (!userid && !image) {
+    return res.status(400).json({
+      error: "Please provide either a userid or an image.",
+    });
+  }
+
+  try {
+    let imgurResponse;
+
+    if (image) {
+      if (!image.startsWith("http://") && !image.startsWith("https://")) {
+        return res.status(400).json({
+          error: "Invalid image URL. URL must start with http or https.",
+        });
+      }
+      imgurResponse = image;
+    } else {
+      imgurResponse = `https://api-canvass.vercel.app/profile?uid=${userid}`;
+    }
+
+    const imageResponse = await axios.get(imgurResponse, { responseType: "arraybuffer" });
+    const data = new FormData();
+    data.append('image', imageResponse.data, { filename: "image.jpg" });
+
+    const config = {
+      method: 'POST',
+      url: 'https://m.photofunia.com/categories/all_effects/playful-cat?server=1',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Cache-Control': 'max-age=0',
+        'Accept-Language': 'en-US',
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-GPC": "1",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        'Origin': 'https://m.photofunia.com',
+        'Referer': 'https://m.photofunia.com/categories/all_effects/playful-cat',        
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    const $ = cheerio.load(response.data);
+    const imageUrl = $(".image.full-height-container img").attr("src");
+
+
+if (imageUrl) {
+const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" });
+      res.setHeader("Content-Type", "image/jpeg");
+      finalImageResponse.data.pipe(res);
+    } else {
+      res.status(404).json({ error: 'Image not found.' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+app.get('/rainy-night', async (req, res) => {
+  const { userid, image } = req.query;
+
+  if (!userid && !image) {
+    return res.status(400).json({
+      error: "Please provide either a userid or an image.",
+    });
+  }
+
+  try {
+    let imgurResponse;
+
+    if (image) {
+      if (!image.startsWith("http://") && !image.startsWith("https://")) {
+        return res.status(400).json({
+          error: "Invalid image URL. URL must start with http or https.",
+        });
+      }
+      imgurResponse = image;
+    } else {
+      imgurResponse = `https://api-canvass.vercel.app/profile?uid=${userid}`;
+    }
+
+    const imageResponse = await axios.get(imgurResponse, { responseType: "arraybuffer" });
+    const data = new FormData();
+    data.append('image', imageResponse.data, { filename: "image.jpg" });
+
+    const config = {
+      method: 'POST',
+      url: 'https://m.photofunia.com/categories/all_effects/rainy-night?server=1',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Cache-Control': 'max-age=0',
+        'Accept-Language': 'en-US',
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-GPC": "1",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        'Origin': 'https://m.photofunia.com',
+        'Referer': 'https://m.photofunia.com/categories/all_effects/rainy-night',        
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    const $ = cheerio.load(response.data);
+    const imageUrl = $(".image.full-height-container img").attr("src");
+
+
+if (imageUrl) {
+const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" });
+      res.setHeader("Content-Type", "image/jpeg");
+      finalImageResponse.data.pipe(res);
+    } else {
+      res.status(404).json({ error: 'Image not found.' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+
+app.get('/piccadilly', async (req, res) => {
+  const { userid, image } = req.query;
+
+  if (!userid && !image) {
+    return res.status(400).json({
+      error: "Please provide either a userid or an image.",
+    });
+  }
+
+  try {
+    let imgurResponse;
+
+    if (image) {
+      if (!image.startsWith("http://") && !image.startsWith("https://")) {
+        return res.status(400).json({
+          error: "Invalid image URL. URL must start with http or https.",
+        });
+      }
+      imgurResponse = image;
+    } else {
+      imgurResponse = `https://api-canvass.vercel.app/profile?uid=${userid}`;
+    }
+
+    const imageResponse = await axios.get(imgurResponse, { responseType: "arraybuffer" });
+    const data = new FormData();
+    data.append('image', imageResponse.data, { filename: "image.jpg" });
+
+    const config = {
+      method: 'POST',
+      url: 'https://m.photofunia.com/categories/all_effects/piccadilly-arcade?server=1',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Cache-Control': 'max-age=0',
+        'Accept-Language': 'en-US',
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-GPC": "1",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        'Origin': 'https://m.photofunia.com',
+        'Referer': 'https://m.photofunia.com/categories/all_effects/piccadilly-arcade',        
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    const $ = cheerio.load(response.data);
+    const imageUrl = $(".image.full-height-container img").attr("src");
+
+
+if (imageUrl) {
+const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" });
+      res.setHeader("Content-Type", "image/jpeg");
+      finalImageResponse.data.pipe(res);
+    } else {
+      res.status(404).json({ error: 'Image not found.' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+
+
+
+
+app.get('/summoning', async (req, res) => {
+  const { userid, image } = req.query;
+
+  if (!userid && !image) {
+    return res.status(400).json({
+      error: "Please provide either a userid or an image.",
+    });
+  }
+
+  try {
+    let imgurResponse;
+
+    if (image) {
+      if (!image.startsWith("http://") && !image.startsWith("https://")) {
+        return res.status(400).json({
+          error: "Invalid image URL. URL must start with http or https.",
+        });
+      }
+      imgurResponse = image;
+    } else {
+      imgurResponse = `https://api-canvass.vercel.app/profile?uid=${userid}`;
+    }
+
+    const imageResponse = await axios.get(imgurResponse, { responseType: "arraybuffer" });
+    const data = new FormData();
+    data.append('image', imageResponse.data, { filename: "image.jpg" });
+
+    const config = {
+      method: 'POST',
+      url: 'https://m.photofunia.com/categories/all_effects/summoning-spirits?server=1',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Cache-Control': 'max-age=0',
+        'Accept-Language': 'en-US',
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-GPC": "1",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        'Origin': 'https://m.photofunia.com',
+        'Referer': 'https://m.photofunia.com/categories/all_effects/summoning-spirits',        
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    const $ = cheerio.load(response.data);
+    const imageUrl = $(".image.full-height-container img").attr("src");
+
+
+if (imageUrl) {
+const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" });
+      res.setHeader("Content-Type", "image/jpeg");
+      finalImageResponse.data.pipe(res);
+    } else {
+      res.status(404).json({ error: 'Image not found.' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+app.get('/brick-wall', async (req, res) => {
+  const { userid, image } = req.query;
+
+  if (!userid && !image) {
+    return res.status(400).json({
+      error: "Please provide either a userid or an image.",
+    });
+  }
+
+  try {
+    let imgurResponse;
+
+    if (image) {
+      if (!image.startsWith("http://") && !image.startsWith("https://")) {
+        return res.status(400).json({
+          error: "Invalid image URL. URL must start with http or https.",
+        });
+      }
+      imgurResponse = image;
+    } else {
+      imgurResponse = `https://api-canvass.vercel.app/profile?uid=${userid}`;
+    }
+
+    const imageResponse = await axios.get(imgurResponse, { responseType: "arraybuffer" });
+    const data = new FormData();
+    data.append('image', imageResponse.data, { filename: "image.jpg" });
+
+    const config = {
+      method: 'POST',
+      url: 'https://m.photofunia.com/categories/all_effects/art-on-the-brick-wall?server=1',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Cache-Control': 'max-age=0',
+        'Accept-Language': 'en-US',
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-GPC": "1",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        'Origin': 'https://m.photofunia.com',
+        'Referer': 'https://m.photofunia.com/categories/all_effects/art-on-the-brick-wall',        
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    const $ = cheerio.load(response.data);
+    const imageUrl = $(".image.full-height-container img").attr("src");
+
+
+if (imageUrl) {
+const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" });
+      res.setHeader("Content-Type", "image/jpeg");
+      finalImageResponse.data.pipe(res);
+    } else {
+      res.status(404).json({ error: 'Image not found.' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+app.get('/hanging-billboard', async (req, res) => {
+  const { text, userid, image } = req.query;
+
+  if (!userid && !image) {
+    return res.status(400).json({
+      error: "Please provide either a userid or an image.",
+    });
+  }
+
+  try {
+    let imgurResponse;
+
+    if (image) {
+      if (!image.startsWith("http://") && !image.startsWith("https://")) {
+        return res.status(400).json({
+          error: "Invalid image URL. URL must start with http or https.",
+        });
+      }
+      imgurResponse = image;
+    } else {
+      imgurResponse = `https://api-canvass.vercel.app/profile?uid=${userid}`;
+    }
+
+    const imageResponse = await axios.get(imgurResponse, { responseType: "arraybuffer" });
+    const data = new FormData();
+    data.append('image', imageResponse.data, { filename: "image.jpg" });
+data.append('text', text);
+
+    const config = {
+      method: 'POST',
+      url: 'https://m.photofunia.com/categories/all_effects/hanging-billboard?server=1',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Cache-Control': 'max-age=0',
+        'Accept-Language': 'en-US',
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-GPC": "1",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        'Origin': 'https://m.photofunia.com',
+        'Referer': 'https://m.photofunia.com/categories/all_effects/hanging-billboard',        
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    const $ = cheerio.load(response.data);
+    const imageUrl = $(".image.full-height-container img").attr("src");
+
+if (imageUrl) {
+const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" });
+      res.setHeader("Content-Type", "image/jpeg");
+      finalImageResponse.data.pipe(res);
+    } else {
+      res.status(404).json({ error: 'Image not found.' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/foggy-window', async (req, res) => {
+  const {text, background} = req.query;
+
+const b = {
+  1: "1",
+  2: "2",
+  3: "2",
+};
+
+if (!text || !background) {
+    return res.status(400).json({ error: "please provide a text and background." });
+}
+
+const nge = parseInt(background);
+if (isNaN(nge) || !b[nge]) {
+    return res.status(400).json({
+      author: "yazky",
+      error: "Invalid background number",
+      background: b,
+      usage: "/foggy-window?text=Hello+World& background=1",
+    });
+  }
+
+  let data = new FormData();   
+  data.append('text', text);
+data.append('bcg', background);  
+
+  let config = {
+    method: 'POST',
+    url: 'https://m.photofunia.com/categories/all_effects/foggy_window_writing?server=1',
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+      'Cache-Control': 'max-age=0',
+      'sec-ch-ua': '"Chromium";v="127", "Not)A;Brand";v="99", "Microsoft Edge Simulate";v="127", "Lemur";v="127"',
+      'sec-ch-ua-mobile': '?1',
+      'sec-ch-ua-platform': '"Android"',
+      'Accept-Language': 'en-US',
+      'Upgrade-Insecure-Requests': '1',
+      'Origin': 'https://m.photofunia.com',
+      'Sec-Fetch-Site': 'same-origin',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-User': '?1',
+      'Sec-Fetch-Dest': 'document',
+      'Referer': 'https://m.photofunia.com/categories/all_effects/foggy_window_writing',
+    },
+    data: data
+  };
+
+  try {
+    const response = await axios.request(config);
+    const $ = cheerio.load(response.data);
+    const imageUrl = $(".image-container .image img").attr("src");
+
+    if (imageUrl) {
+      const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" });
+      res.setHeader("Content-Type", "image/jpeg");
+      finalImageResponse.data.pipe(res);
+    } else {
+      res.status(404).json({
+        author: "Cliff",
+        error: "Image not found."
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      author: "Cliff",
+      error: "An error occurred."
+    });
+  }
+});
+
+
+
+
+app.get('/evening-billboard', async (req, res) => {
+  const { userid, image } = req.query;
+
+  if (!userid && !image) {
+    return res.status(400).json({
+      error: "Please provide either a userid or an image.",
+    });
+  }
+
+  try {
+    let imgurResponse;
+
+    if (image) {
+      if (!image.startsWith("http://") && !image.startsWith("https://")) {
+        return res.status(400).json({
+          error: "Invalid image URL. URL must start with http or https.",
+        });
+      }
+      imgurResponse = image;
+    } else {
+      imgurResponse = `https://api-canvass.vercel.app/profile?uid=${userid}`;
+    }
+
+    const imageResponse = await axios.get(imgurResponse, { responseType: "arraybuffer" });
+    const data = new FormData();
+    data.append('image', imageResponse.data, { filename: "image.jpg" });
+
+const lk = "https://m.photofunia.com/categories/all_effects/evening-billboard";
+
+    const config = {
+      method: 'POST',
+      url: `${lk}?server=1`,
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Cache-Control': 'max-age=0',
+        'Accept-Language': 'en-US',
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-GPC": "1",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        'Origin': 'https://m.photofunia.com',
+        'Referer': `${lk}`,        
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    const $ = cheerio.load(response.data);
+    const imageUrl = $(".image.full-height-container img").attr("src");
+
+
+if (imageUrl) {
+const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" });
+      res.setHeader("Content-Type", "image/jpeg");
+      finalImageResponse.data.pipe(res);
+    } else {
+      res.status(404).json({ error: 'Image not found.' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+
+
+
+
+app.get('/typewriter', async (req, res) => {
+  const { text } = req.query;
+
+  if (!text) {
+    return res.status(400).json({
+      error: "Please provide a text.",
+    });
+  }
+
+  try {
+    const data = new FormData();
+    data.append('text', text);
+
+const lk = "https://m.photofunia.com/categories/all_effects/typewriter";
+
+    const config = {
+      method: 'POST',
+      url: `${lk}?server=1`,
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Cache-Control': 'max-age=0',
+        'Accept-Language': 'en-US',
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-GPC": "1",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        'Origin': 'https://m.photofunia.com',
+        'Referer': `${lk}`,        
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    const $ = cheerio.load(response.data);
+    const imageUrl = $(".image.full-height-container img").attr("src");
+
+
+if (imageUrl) {
+const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" });
+      res.setHeader("Content-Type", "image/jpeg");
+      finalImageResponse.data.pipe(res);
+    } else {
+      res.status(404).json({ error: 'Image not found.' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
 
 
 app.use((req, res, next) => {

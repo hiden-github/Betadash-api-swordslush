@@ -2584,7 +2584,7 @@ async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', body
         { url: "/snow-writing?text1=&text2=", name: "𖣘 Snow Writing", description: "Generate snow-writing-canvas for the specified text1 and text2" },
         { url: "/christmas-writing?text=", name: "𖣘 Christmas Writing", description: "Generate christmas-writing-canvas for the specified text" },
         { url: "/shopping-arcade?userid=", name: "𖣘 Shopping Arcade", description: "Generate shopping-arcade-canvas for the specified userid" },
-        { url: "/light-writing?text=", name: "𖣘 Light Writing", description: "Generate light-writing-canvas for the specified text" },
+        { url: "/light-writing?text=&base=", name: "𖣘 Light Writing", description: "Generate light-writing-canvas for the specified text" },
         { url: "/zombie?userid=", name: "𖣘 Zombie", description: "Generate zombie-canvas for the specified userid" },
         { url: "/conference?userid=", name: "𖣘 Conference", description: "Generate conference-canvas for the specified userid" },
         { url: "/puzzle?userid=", name: "𖣘 Puzzle", description: "Generate puzzle-canvas for the specified userid" },
@@ -2622,7 +2622,17 @@ async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', body
         { url: "/painting-snap?userid=", name: "𖣘 Painting Snap", description: "Generate painting-snap-canvas for the specified userid" },
         { url: "/trump?userid=&text=", name: "𖣘 Trump", description: "Generate trump-canvas for the specified userid and text" },
         { url: "/captivity?userid=", name: "𖣘 Captivity", description: "Generate captivity-canvas for the specified userid" },
-
+   { url: "/new-york-street?userid=", name: "𖣘 New-york street", description: "Generate Pictures New york street canvas for the specified userid" },
+  { url: "/wall-mural?userid=", name: "𖣘 Wall Mural", description: "Generate Pictures Wall Mural canvas for the specified userid" },
+  { url: "/playful-cat?userid=", name: "𖣘 Playful Cat", description: "Generate Pictures Playful Cat canvas for the specified userid" },
+  { url: "/rainy-night?userid=", name: "𖣘 Rainy Night", description: "Generate Pictures Rainy Night canvas for the specified userid" },
+  { url: "/piccadilly?userid=", name: "𖣘 Piccadilly Arcade", description: "Generate Pictures Piccadilly Arcade canvas for the specified userid" },
+  { url: "/summoning?userid=", name: "𖣘 Summoning Spirits", description: "Generate Pictures Summoning Spirits canvas for the specified userid" },
+  { url: "/brick-wall?userid=", name: "𖣘  Brick Wall", description: "Generate Pictures Art on the Brick Wall canvas for the specified userid" },
+  { url: "/hanging-billboard?userid=", name: "𖣘 Hanging Billboard", description: "Generate Pictures Hanging Billboard canvas for the specified userid" },
+  { url: "/foggy-window?text=&background=", name: "𖣘 Foggy Window", description: "Generate Pictures Foggy Window canvas with the specified text and background" },
+  { url: "/evening-billboard?userid=", name: "𖣘 Evening Billboard", description: "Generate Pictures Evening Billboard canvas for the specified userid" },
+  { url: "/typewriter?text=", name: "𖣘 Typewriter", description: "Generate Pictures Typewriter canvas with the specified text" },
   { url: "/pavement?userid=", name: "𖣘 Pavement", description: "Generate Pavement-canvas for the specified userid" },
   { url: "/graffiti-billboard?userid=", name: "𖣘 Graffiti Billboard", description: "Generate Graffiti Billboard-canvas for the specified userid" },
   { url: "/graffiti-wall?userid=", name: "𖣘 Graffiti Wall", description: "Generate Graffiti Wall-canvas for the specified userid" },
@@ -2795,11 +2805,10 @@ sortedCategories.forEach((category, categoryIndex) => {
     } else {
       content.classList.add('open');
       arrow.classList.add('open');
-    }
-  });
-});
-      } catch (error) {
-        console.error('Error loading settings or API info:', error);
+     }
+    });
+   });
+     } catch (error) {
       } finally {
         setTimeout(() => {
           const loadingScreen = document.getElementById("loadingScreen");
