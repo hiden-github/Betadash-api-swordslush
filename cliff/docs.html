@@ -2386,6 +2386,11 @@ async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', body
         {
           name: "SEARCH",
           items: [
+            {
+             url: "/lyrics-finder?title=",
+             name: "𖣘 Lyrics",
+             description: "Lyrics Finder music"
+            },
             { url: "/tiksearch?search=", name: "𖣘 TikSearch", description: "TikTok search" },
             { url: "/tiksearchv2?search=&count=", name: "𖣘 TikSearchV2", description: "TikTok search v2" },
             { url: "/lgate?search=", name: "𖣘 Lgate", description: "Lgate searcher" },
@@ -2406,10 +2411,7 @@ async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', body
             { url: "/gpt4?ask=", name: "𖣘 ChatGPT4", description: "Gpt4 architecture from openai" },
             { url: "/gpt4-turbo?message=", name: "𖣘 GPT4-TURBO", description: "Gpt4 from rapid Api" },
             { url: "/gpt3-turbo?question=", name: "𖣘 GPT3-TURBO", description: "Koala Api" },
-            { url: "/hercai?ask=", name: "𖣘 Hercai AI", description: "AI model for entertainment queries." },
             { url: "/goody?ask=", name: "𖣘 Goody", description: "The world’s AI responsible Ai model" },
-            { url: "/grok-2?ask=", name: "𖣘 Grok-2", description: "Grok-2, a conversational model from a newer architecture" },
-            { url: "/grok-2-mini?ask=", name: "𖣘 Grok-2-Mini", description: "A lightweight version of Grok-2" },
             { url: "/panda?ask=", name: "𖣘 Panda", description: "Panda ai personal assistant" },
             { url: "/mixtral-nemo?ask=", name: "𖣘 Mixtral-Nemo", description: "A powerful AI model optimized for efficiency" },
             { url: "/copilot?ask=", name: "𖣘 Github-Copilot", description: "AI-powered code completion tool developed by GitHub" },
@@ -2533,6 +2535,36 @@ async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', body
         { url: "/vampire?userid=", name: "𖣘 Vampire", description: "Generate vampire-canvas for the specified userid" },
         { url: "/clapper-board?userid=&production=&director=&cameraman=&date=&scene=&take=", name: "𖣘 Clapper Board", description: "Generate clapper-board-canvas for the specified userid, production, director, cameraman, date, scene, and take" },
         { url: "/calendar?userid=", name: "𖣘 Calendar", description: "Generate calendar-canvas for the specified userid" },
+  {
+    "url": "/johnny?text=",
+    "name": "𖣘 Johnny",
+    "description": "Generate canvas Johnny post"
+  },
+  {
+    "url": "/bogart?text=",
+    "name": "𖣘 Bogart",
+    "description": "Generate canvas Bogart post"
+  },
+  {
+    "url": "/mems?text1=&text2=",
+    "name": "𖣘 Mems",
+    "description": "Generate canvas Mems compare text"
+  },
+  {
+    "url": "/slapv2?one=&two=",
+    "name": "𖣘 Slapv2",
+    "description": "Generate canvas fighting slap"
+  },
+  {
+    "url": "/fampair?mother=&father=&son=",
+    "name": "𖣘 Fampair",
+    "description": "Generate canvas Family pair"
+  },
+  {
+    "url": "/gay?uid1=&uid2=",
+    "name": "𖣘 Gay",
+    "description": "Generate canvas Bisexual"
+  },
         { url: "/melbourne?userid=", name: "𖣘 Melbourne", description: "Generate melbourne-canvas for the specified userid" },
         { url: "/night-streetv2?userid=", name: "𖣘 Night Streetv2", description: "Generate night-streetv2-canvas for the specified userid" },
         { url: "/big-screen?userid=", name: "𖣘 Big Screen", description: "Generate big-screen-canvas for the specified userid" },

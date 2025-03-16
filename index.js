@@ -66,9 +66,6 @@ app.get("/gpt4-turbo", async function (req, res) {
   res.sendFile(path.join(__dirname, "/public/chatgpt/gpt2"));
 });
 
-app.get("/hercai", async function (req, res) {
-  res.sendFile(path.join(__dirname, "/public/chatgpt/hercai"));
-});
 
 app.get("/goody", async function (req, res) {
   res.sendFile(path.join(__dirname, "/public/chatgpt/goody"));
@@ -82,7 +79,7 @@ app.get("/dreamforth", async function (req, res) {
   res.sendFile(path.join(__dirname, "/public/downloader/df"));
 });
 
-const { GPTx } = require('@ruingl/gptx');
+
 const socketIo = require('socket.io');
 
 const server = require('http').createServer(app);
@@ -118,40 +115,6 @@ requestCount++;
 }); **/
 
 
-const models = {
-// VOIDS
-    'grok-2': new GPTx({ provider: 'Voids', model: 'grok-2' }),
-    'grok-2-mini': new GPTx({ provider: 'Voids', model: 'grok-2-mini' }),
-};
-
-const handle = async (modells, query, res) => {
-    const gptx = models[modells];
-
-    const messages = [
-        {
-            role: 'user',
-            content: query
-        }
-    ];
-
-    try {
-        const response = await gptx.ChatCompletion(messages);
-        res.json({
-            code: 200,
-            status: true,
-            message: response,
-            author: 'Yazky'
-      });
-    } catch (error) {
-        res.status(500).send({
-            code: 500,
-            status: false,
-            message: error.message,
-            author: 'Yazky'
-      });
-    }
-}; 
-
 /**
 app.get('/requests', (req, res) => {
   fs.readFile(countFilePath, 'utf8', (err, data) => {
@@ -174,18 +137,6 @@ const htmlResponse =
     }
   });
 }); **/
-
-app.get('/grok-2', (req, res) => {
-    const query = req.query.ask;
-    if (!query) return res.status(400).send({error: 'Query parameter "ask" is required'});
-    handle('grok-2', query, res);
-});
-
-app.get('/grok-2-mini', (req, res) => {
-    const query = req.query.ask;
-    if (!query) return res.status(400).send({error: 'Query parameter "ask" is required'});
-    handle('grok-2-mini', query, res);
-});
 
 const axios = require('axios');
 const cheerio = require('cheerio');
