@@ -13064,7 +13064,7 @@ app.get('/rounded-billboard', async (req, res) => {
 
     const config = {
       method: 'POST',
-      url: 'https://m.photofunia.com/effects/theatre?server=1',
+      url: 'https://m.photofunia.com/effects/rounded_billboard?server=1',
       headers: {
         ...data.getHeaders(),
         'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
@@ -13079,7 +13079,7 @@ app.get('/rounded-billboard', async (req, res) => {
         "Sec-Fetch-User": "?1",
         "Sec-Fetch-Dest": "document",
         'Origin': 'https://m.photofunia.com',
-        'Referer': 'https://m.photofunia.com/effects/theatre',        
+        'Referer': 'https://m.photofunia.com/effects/rounded_billboard',        
       },
       data: data,
     };
