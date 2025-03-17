@@ -13061,8 +13061,6 @@ app.get('/rounded-billboard', async (req, res) => {
     const imageResponse = await axios.get(imgurResponse, { responseType: "arraybuffer" });
     const data = new FormData();
     data.append('image', imageResponse.data, { filename: "image.jpg" });
-data.append('text', text);
-data.append('text2', text2 || "");
 
     const config = {
       method: 'POST',
