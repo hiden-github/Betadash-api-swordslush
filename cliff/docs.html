@@ -1754,6 +1754,20 @@ async function handleApiRequest(apiUrl, modalRefs, apiName) {
         </div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 slideUp" style="animation-delay: 0.3s;">
+
+    <div class="bg-dark-700 rounded-xl p-6 shadow-lg card-hover gradient-border">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-lg font-medium font-heading">Date & Time</h3>
+    <div class="p-2 bg-green-900/30 rounded-md">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2M12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20z" />
+      </svg>
+    </div>
+  </div>
+  <div class="flex items-end">
+    <span id="currentDateTime" class="text-gray-400 ml-2 mb-1"></span>
+  </div>
+</div>
         <div class="bg-dark-700 rounded-xl p-6 shadow-lg card-hover gradient-border">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-medium font-heading">Total APIs</h3>
@@ -1829,7 +1843,28 @@ async function handleApiRequest(apiUrl, modalRefs, apiName) {
       <div id="notificationList" class="space-y-2 max-h-[300px] overflow-y-auto"></div>
     </div>
   </div>
+
   <script>
+  function updateDateTime() {
+  const now = new Date();
+  const options = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  };
+
+  document.getElementById('currentDateTime').textContent = now.toLocaleString('en-US', options);
+}
+
+// Update every second
+setInterval(updateDateTime, 1000);
+
+// Initial call to display immediately
+updateDateTime();
     function animateLoading() {
       const loadingBar = document.getElementById('loadingBar');
       let width = 0;
@@ -2356,11 +2391,7 @@ async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', body
              {
               title: "Welcome to API Dashboard",
               message: "Explore our APIs and integrate them into your projects."
-            },
-             {
-             title: "New Feature",
-             message: "added canvas by using userid or text etc..."
-           }
+            }
           ]
         };
 
@@ -2405,6 +2436,21 @@ async function handleApiRequest(apiUrl, modalRefs, apiName, method = 'get', body
         {
           name: "AI",
           items: [
+ {
+    "url": "/chipp?ask=&uid=&roleplay=",
+    "name": "𖣘 Chipp",
+    "description": "Interact with GPT-4o AI with conversation history, image generation, recognition, and browsing."
+  },
+  {
+    "url": "/luzia?chat=",
+    "name": "𖣘 Luzia",
+    "description": "Chat with Luzia a friendly Ai."
+  },
+  {
+    "url": "/onion?chat=",
+    "name": "𖣘 Onion",
+    "description": "Chat with TrustOnion AI"
+  },
             { url: "/assistant?chat=", name: "𖣘 Assistant", description: "Ai assistant" },
             { url: "/humanize?text=", name: "𖣘 Humanizer", description: "Humanize text not detected an Ai created" },
             { url: "/aidetect?text=", name: "𖣘 Ai detect", description: "aidetector rating for ai created or not" },

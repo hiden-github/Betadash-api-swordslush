@@ -13513,6 +13513,240 @@ const finalImageResponse = await axios.get(imageUrl, { responseType: "stream" })
 
 
 
+function randomUserAgent() {
+  const chromeVersion = `${Math.floor(Math.random() * 6) + 130}.0.0.0`;
+  const oprVersion = `${Math.floor(Math.random() * 5) + 86}.0.0.0`;
+  return `Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVersion} Mobile Safari/537.36 OPR/${oprVersion}`;
+}
+
+const API_URL = "https://chatgpt4o-29800.chipp.ai/api/chat";
+const conversationHistories = {};
+const IMAGE_REGEX = /!\[Generated Image for (.*?)\]\((https?:\/\/[^\s()]+)\)/g;
+
+app.get("/chipp", async (req, res) => {
+  const { uid = Date.now(), ask } = req.query;
+  const roleplay =  req.query.roleplay || "You're an AI Assistant";
+
+  if (!ask) {
+    return res.status(400).json({
+      error: "Ask parameter is required.",
+      description: "Interact with GPT-4o AI with conversation history, image generation, recognition, and browsing.",
+      usage: "/chipp?ask=&uid=&roleplay=You're an AI Assistant"
+    });
+  }
+
+  if (["clear", "reset", "forget"].includes(ask.toLowerCase())) {
+    delete conversationHistories[uid];
+    return res.json({ status: true, message: "Conversation history cleared." });
+  }
+
+  conversationHistories[uid] = conversationHistories[uid] || [];
+  conversationHistories[uid].push({ role: "user", content: ask });
+
+  try {
+    const messages = [...conversationHistories[uid]];
+    if (roleplay) {
+      messages.unshift({ role: "system", content: roleplay });
+    }
+
+    const axiosInstance = axios.create({
+      httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false })
+    });
+
+    const response = await axiosInstance.post(API_URL, {
+      chatSessionId: "16d1579a-af3a-4dfa-ad5c-333e5b34a181",
+      messages: messages
+    }, {
+      headers: {
+        'User-Agent': randomUserAgent(),
+        'Content-Type': 'application/json',
+        'accept-language': 'en-US,en;q=0.5',
+        'referer': 'https://chatgpt4o-29800.chipp.ai/w/chat',
+        'origin': 'https://chatgpt4o-29800.chipp.ai',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-origin',
+        'priority': 'u=0',
+        'te': 'trailers'
+      }
+    });
+
+    const responseData = response.data;
+    const cleanedResponse = cleanResponse(responseData);
+    const images = extractImages(responseData);
+
+    conversationHistories[uid].push({ role: "assistant", content: cleanedResponse });
+
+    const responsePayload = {
+      status: true,
+      answer: cleanedResponse,
+      conversation_history: conversationHistories[uid]
+    };
+
+    if (roleplay) {
+      responsePayload.roleplay = roleplay;
+    }
+
+    if (images.length > 0) {
+      responsePayload.images = images;
+    }
+
+    return res.json(responsePayload);
+
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      error: error.message || "Failed to fetch response from GPT-4o."
+    });
+  }
+});
+
+function cleanResponse(responseData) {
+  let fragments = responseData.match(/0:"(.*?)"/g);
+  if (fragments) {
+    return fragments.map(fragment => fragment.substring(3, fragment.length - 1)).join("").replace(/\\+n/g, '\n');
+  }
+
+  let resultMatch = responseData.match(/"result":"(.*?)"/);
+  if (resultMatch) {
+    return resultMatch[1];
+  }
+
+  let searchResults = [...responseData.matchAll(/"title":"(.*?)".*?"link":"(.*?)".*?"snippet":"(.*?)"/g)]
+    .map(match => `${match[1]}\n- [Link](${match[2]})\n- *${match[3]}*`)
+    .join("\n\n");
+
+  if (searchResults) {
+    return `Search Results:\n\n${searchResults}`;
+  }
+
+  return responseData;
+}
+
+function extractImages(responseData) {
+  const images = [];
+  let match;
+  while ((match = IMAGE_REGEX.exec(responseData)) !== null) {
+    images.push({ description: match[1], url: match[2] });
+  }
+  return images;
+}
+
+
+
+
+
+app.get('/luzia', async (req, res) => {
+    const chatMessage = req.query.chat;
+    if (!chatMessage) {
+        return res.status(400).json({ error: 'Missing chat query parameter' });
+    }
+
+    let data = new FormData();
+    data.append('session_id', uuidv4());
+    data.append('thread_id', 'null');
+    data.append('message', chatMessage);
+
+    let config = {
+        method: 'POST',
+        url: 'https://pacific-caverns-48403-f9ca7fd19129.herokuapp.com/chat',
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36',
+            'sec-ch-ua-platform': '"Android"',
+            'sec-ch-ua': '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
+            'DNT': '1',
+            'sec-ch-ua-mobile': '?1',
+            'Origin': 'https://www.luzia.com',
+            'Sec-Fetch-Site': 'cross-site',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Dest': 'empty',
+            'Referer': 'https://www.luzia.com/',
+            'Accept-Language': 'en-US,en;q=0.9'
+        },
+        data: data
+    };
+
+    try {
+        const response = await axios.request(config);
+        res.json({
+            author: "yazky",
+            response: response.data.reply
+        });
+    } catch (error) {
+        res.status(500).json({ error:  error.message });
+    }
+});
+
+
+
+app.get('/onion', async (req, res) => {
+    const chatQuery = req.query.chat;
+
+    if (!chatQuery) {
+        return res.status(400).json({ error: 'Missing chat query parameter' });
+    }
+
+    const data = {
+        messages: [
+            {
+                role: "user",
+                content: chatQuery
+            }
+        ],
+        model: "ofCourse"
+    };
+
+    const config = {
+        method: 'POST',
+        url: 'https://api.trustonion.com/api/v1/chat/message',
+        data: data,
+        headers: {
+            'Content-Type': 'application/json',
+            'x-requested-with': 'XMLHttpRequest',
+            'accept': 'text/event-stream',
+            'origin': 'https://pls.openonion.ai',
+            'referer': 'https://pls.openonion.ai/chat/ofCourse/Ra2iHJJpmZbsvfI2f15rr',
+            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_1_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/134.0.6998.99 Mobile/15E148 Safari/604.1'
+        },
+        responseType: 'stream'
+    };
+
+    try {
+        const response = await axios.request(config);
+        let collectedResponse = "";
+
+        response.data.on('data', (chunk) => {
+            const text = chunk.toString();
+            const matches = text.match(/data:\s*({.*})/g);
+            if (matches) {
+                matches.forEach(match => {
+                    try {
+                        const jsonPart = JSON.parse(match.replace('data: ', '').trim());
+                        if (jsonPart.answer) {
+                            const cleanText = jsonPart.answer
+                                .replace(/<\/?[^>]+(>|$)/g, "")
+                                .replace(/\[.*?\]/g, "")
+                                .replace(/\n/g, " ")
+                                .trim();
+
+                            collectedResponse += cleanText + " ";
+                        }
+                    } catch (error) {}
+                });
+            }
+        });
+
+        response.data.on('end', () => {
+            res.json({
+                response: collectedResponse.replace(/\s+/g, " ").trim()
+            });
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 
 
