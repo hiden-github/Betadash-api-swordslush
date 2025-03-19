@@ -13889,8 +13889,2844 @@ app.get('/genfrom-dl', async (req, res) => {
 });
 
 
+// OPTIONAL APIS
 
-app.use((req, res, next) => {
+function formatFont(text) { 
+  const fontMapping = {
+    a: "𝗮", b: "𝗯", c: "𝗰", d: "𝗱", e: "𝗲", f: "𝗳", g: "𝗴", h: "𝗵", i: "𝗶",
+    j: "𝗷", k: "𝗸", l: "𝗹", m: "𝗺", n: "𝗻", o: "𝗼", p: "𝗽", q: "𝗾", r: "𝗿",
+    s: "𝘀", t: "𝘁", u: "𝘂", v: "𝘃", w: "𝘄", x: "𝘅", y: "𝘆", z: "𝘇",
+    A: "𝗔", B: "𝗕", C: "𝗖", D: "𝗗", E: "𝗘", F: "𝗙", G: "𝗚", H: "𝗛", I: "𝗜",
+    J: "𝗝", K: "𝗞", L: "𝗟", M: "𝗠", N: "𝗡", O: "𝗢", P: "𝗣", Q: "𝗤", R: "𝗥",
+    S: "𝗦", T: "𝗧", U: "𝗨", V: "𝗩", W: "𝗪", X: "𝗫", Y: "𝗬", Z: "𝗭"
+  };
+
+  let formattedText = "";
+  for (const char of text) {
+    if (fontEnabled && char in fontMapping) {
+      formattedText += fontMapping[char];
+    } else {
+      formattedText += char;
+    }
+  }
+  return formattedText;
+}
+
+function formatBoldText(response) {
+  return response.replace(/\*\*(.*?)\*\*/g, (match, text) => formatFont(text));
+}
+
+function genRndmIdempotencyKey() {
+  let chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 17; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
+  return result;
+}
+
+function genRndmID() {
+  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 7; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
+  return result;
+}
+
+
+app.get('/blackbox', async (req, res) => {
+  const ask = req.query.ask;
+
+  if (!ask) {
+    return res.status(400).json({ error: 'Missing ask parameter' });
+  }
+
+  try {
+    const sessionIdRes = await axios.get('https://www.blackbox.ai/');
+    const sessionId = sessionIdRes.headers['set-cookie'][0].split(';')[0];
+
+    const headers = {
+      "sec-ch-ua-platform": "\"Android\"",
+      "user-agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36",
+      "sec-ch-ua": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"",
+      "content-type": "application/json",
+      "sec-ch-ua-mobile": "?1",
+      "accept": "*/*",
+      "origin": "https://www.blackbox.ai",
+      "sec-fetch-site": "same-origin",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-dest": "empty",
+      "referer": "https://www.blackbox.ai/",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "en-PH,en-US;q=0.9,en;q=0.8,ru;q=0.7,tr;q=0.6,zh-CN;q=0.5,zh;q=0.4,fil;q=0.3",
+      "cookie": "sessionId=5af10606-480c-4ea3-8a79-242cb9380cec; intercom-id-jlmqxicb=dffd9fe7-2b86-47e0-9d31-a8202db50b14; intercom-device-id-jlmqxicb=5bf7852e-22b8-452e-ae86-42db0cece20c; intercom-session-jlmqxicb=; __Host-authjs.csrf-token=771f45b744aaa236b31d5ff84536f772f9a0264057ee7fc9d87658c4b4a7addb%7Cd0610624f958e27b2c10340f6d5d01be2f900ef5c30c34777015ffeec1c1e0b2; __Secure-authjs.callback-url=https%3A%2F%2Fwww.blackbox.ai"
+    };
+
+    const intercomPingRes = await axios.post('https://api-iam.intercom.io/messenger/web/ping', 
+      new URLSearchParams({
+        'app_id': 'jlmqxicb',
+        'v': '3',
+        'g': 'e6f90c749d7765f3b1bbc8b97fa507e4875bf321',
+        's': sessionId,
+        'r': '',
+        'platform': 'mobile_web',
+        'installation_type': 'js-snippet',
+        'Idempotency-Key': genRndmIdempotencyKey(),
+        'internal': '{}',
+        'is_intersection_booted': 'true',
+        'page_title': 'Chat Blackbox: AI Code Generation, Code Chat, Code Search - Blackbox',
+        'user_active_company_id': 'undefined',
+        'user_data': '{}',
+        'source': 'apiUpdate',
+        'sampling': 'true',
+        'referer': 'https://www.blackbox.ai/'
+      })
+    );
+
+/** const symbols = ["blackboxai-pro", "blackbox.ai-pro"];
+  const randomIndex = Math.floor(Math.random() * symbols.length);
+  const tae = symbols[randomIndex];   **/
+const user = genRndmID();
+    const chatReq = {
+      'messages': [
+        {
+          'id': user,
+          'content': ask,
+          'role': 'user'
+        }
+      ],
+      'id': user,
+      'previewToken': null,
+      'userId': intercomPingRes.data.user.anonymous_id,
+      'codeModelMode': true,
+      'agentMode': {},
+      "maxTokens": 1024,
+      "playgroundTopP": 0.9,
+      "playgroundTemperature": 0.5,
+      'trendingAgentMode': {},
+      'isMicMode': true,
+      'isChromeExt': true,
+      'githubToken': null,
+      'clickedAnswer2': false,
+      'clickedAnswer3': false,
+      'clickedForceWebSearch': true,
+      'visitFromURL': true,
+      "userSelectedModel": "blackbox.ai-pro",
+      "validated": "00f37b34-a166-4efb-bce5-1312d87f2f94"
+    };
+
+    const chatRes = await axios.post('https://www.blackbox.ai/api/chat', chatReq, { headers });
+
+    let cleanResponse = chatRes.data;
+    cleanResponse = cleanResponse.replace(/^[^\S\r\n]*[^\n]*\n\n/, '').replace(/\$~~~\$[\s\S]*?\$~~~\$/g, '').trim();
+    cleanResponse = cleanResponse.replace(/https?:\/\/[^\s]+/g, '');
+    cleanResponse = cleanResponse.replace(/\$@$v=undefined-rv1\$@\$/g, '').trim();
+    cleanResponse = cleanResponse.replace(/https:\/\/www\.blackbox\.ai/, '').trim();
+    cleanResponse = cleanResponse.replace(/Generated by BLACKBOX\.AI, try unlimited chat/, '').trim();
+cleanResponse = cleanResponse.replace(/###/g, '');
+    let formattedResponse = formatBoldText(cleanResponse);
+    res.send({
+      Author: "Cliffvincent",
+      Response: formattedResponse
+    });
+  } catch (error) {
+    res.status(500).send({ "error": error.message });
+  }
+});
+
+
+function formatFont(text) { 
+  const fontMapping = {
+    a: "𝗮", b: "𝗯", c: "𝗰", d: "𝗱", e: "𝗲", f: "𝗳", g: "𝗴", h: "𝗵", i: "𝗶",
+    j: "𝗷", k: "𝗸", l: "𝗹", m: "𝗺", n: "𝗻", o: "𝗼", p: "𝗽", q: "𝗾", r: "𝗿",
+    s: "𝘀", t: "𝘁", u: "𝘂", v: "𝘃", w: "𝘄", x: "𝘅", y: "𝘆", z: "𝘇",
+    A: "𝗔", B: "𝗕", C: "𝗖", D: "𝗗", E: "𝗘", F: "𝗙", G: "𝗚", H: "𝗛", I: "𝗜",
+    J: "𝗝", K: "𝗞", L: "𝗟", M: "𝗠", N: "𝗡", O: "𝗢", P: "𝗣", Q: "𝗤", R: "𝗥",
+    S: "𝗦", T: "𝗧", U: "𝗨", V: "𝗩", W: "𝗪", X: "𝗫", Y: "𝗬", Z: "𝗭"
+  };
+
+  let formattedText = "";
+  for (const char of text) {
+    if (fontEnabled && char in fontMapping) {
+      formattedText += fontMapping[char];
+    } else {
+      formattedText += char;
+    }
+  }
+  return formattedText;
+}
+
+function formatBoldText(response) {
+  return response.replace(/\*\*(.*?)\*\*/g, (match, text) => formatFont(text));
+}
+
+function genRndmIdempotencyKey() {
+  let chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 17; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
+  return result;
+}
+
+function genRndmID() {
+  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 7; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
+  return result;
+}
+
+
+app.get('/blackbox-pro', async (req, res) => {
+  const ask = req.query.ask;
+
+  if (!ask) {
+    return res.status(400).json({ error: 'Missing ask parameter' });
+  }
+
+  try {
+    const sessionIdRes = await axios.get('https://www.blackbox.ai/');
+    const sessionId = sessionIdRes.headers['set-cookie'][0].split(';')[0];
+
+    const headers = {
+      "sec-ch-ua-platform": "\"Android\"",
+      "user-agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36",
+      "sec-ch-ua": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"",
+      "content-type": "application/json",
+      "sec-ch-ua-mobile": "?1",
+      "accept": "*/*",
+      "origin": "https://www.blackbox.ai",
+      "sec-fetch-site": "same-origin",
+      "sec-fetch-mode": "cors",
+      "sec-fetch-dest": "empty",
+      "referer": "https://www.blackbox.ai/",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "en-PH,en-US;q=0.9,en;q=0.8,ru;q=0.7,tr;q=0.6,zh-CN;q=0.5,zh;q=0.4,fil;q=0.3",
+      "cookie": "sessionId=5af10606-480c-4ea3-8a79-242cb9380cec; intercom-id-jlmqxicb=dffd9fe7-2b86-47e0-9d31-a8202db50b14; intercom-device-id-jlmqxicb=5bf7852e-22b8-452e-ae86-42db0cece20c; intercom-session-jlmqxicb=; __Host-authjs.csrf-token=771f45b744aaa236b31d5ff84536f772f9a0264057ee7fc9d87658c4b4a7addb%7Cd0610624f958e27b2c10340f6d5d01be2f900ef5c30c34777015ffeec1c1e0b2; __Secure-authjs.callback-url=https%3A%2F%2Fwww.blackbox.ai"
+    };
+
+    const intercomPingRes = await axios.post('https://api-iam.intercom.io/messenger/web/ping', 
+      new URLSearchParams({
+        'app_id': 'jlmqxicb',
+        'v': '3',
+        'g': 'e6f90c749d7765f3b1bbc8b97fa507e4875bf321',
+        's': sessionId,
+        'r': '',
+        'platform': 'mobile_web',
+        'installation_type': 'js-snippet',
+        'Idempotency-Key': genRndmIdempotencyKey(),
+        'internal': '{}',
+        'is_intersection_booted': 'true',
+        'page_title': 'Chat Blackbox: AI Code Generation, Code Chat, Code Search - Blackbox',
+        'user_active_company_id': 'undefined',
+        'user_data': '{}',
+        'source': 'apiUpdate',
+        'sampling': 'true',
+        'referer': 'https://www.blackbox.ai/'
+      })
+    );
+
+/** const symbols = ["blackboxai-pro", "blackbox.ai-pro"];
+  const randomIndex = Math.floor(Math.random() * symbols.length);
+  const tae = symbols[randomIndex];   **/
+const user = genRndmID();
+    const chatReq = {
+      'messages': [
+        {
+          'id': user,
+          'content': ask,
+          'role': 'user'
+        }
+      ],
+      'id': user,
+      'previewToken': null,
+      'userId': intercomPingRes.data.user.anonymous_id,
+      'codeModelMode': true,
+      'agentMode': {},
+      "maxTokens": 1024,
+      "playgroundTopP": 0.9,
+      "playgroundTemperature": 0.5,
+      'trendingAgentMode': {},
+      'isMicMode': true,
+      'isChromeExt': true,
+      'githubToken': null,
+      'clickedAnswer2': false,
+      'clickedAnswer3': false,
+      'clickedForceWebSearch': true,
+      'visitFromURL': true,
+      "userSelectedModel": "blackboxai-pro",
+      "validated": "00f37b34-a166-4efb-bce5-1312d87f2f94"
+    };
+
+    const chatRes = await axios.post('https://www.blackbox.ai/api/chat', chatReq, { headers });
+
+    let cleanResponse = chatRes.data;
+    cleanResponse = cleanResponse.replace(/^[^\S\r\n]*[^\n]*\n\n/, '').replace(/\$~~~\$[\s\S]*?\$~~~\$/g, '').trim();
+    cleanResponse = cleanResponse.replace(/https?:\/\/[^\s]+/g, '');
+    cleanResponse = cleanResponse.replace(/\$@$v=undefined-rv1\$@\$/g, '').trim();
+    cleanResponse = cleanResponse.replace(/https:\/\/www\.blackbox\.ai/, '').trim();
+    cleanResponse = cleanResponse.replace(/Generated by BLACKBOX\.AI, try unlimited chat/, '').trim();
+cleanResponse = cleanResponse.replace(/###/g, '');
+    let formattedResponse = formatBoldText(cleanResponse);
+    res.send({
+      Author: "Cliffvincent",
+      Response: formattedResponse
+    });
+  } catch (error) {
+    res.status(500).send({ "error": error.message });
+  }
+});
+
+
+function formatFont(text) { 
+  const fontMapping = {
+        a: "𝗮", b: "𝗯", c: "𝗰", d: "𝗱", e: "𝗲", f: "𝗳", g: "𝗴", h: "𝗵", i: "𝗶",
+        j: "𝗷", k: "𝗸", l: "𝗹", m: "𝗺", n: "𝗻", o: "𝗼", p: "𝗽", q: "𝗾", r: "𝗿",
+        s: "𝘀", t: "𝘁", u: "𝘂", v: "𝘃", w: "𝘄", x: "𝘅", y: "𝘆", z: "𝘇",
+        A: "𝗔", B: "𝗕", C: "𝗖", D: "𝗗", E: "𝗘", F: "𝗙", G: "𝗚", H: "𝗛", 
+        I: "𝗜", J: "𝗝", K: "𝗞", L: "𝗟", M: "𝗠", N: "𝗡", O: "𝗢", P: "𝗣", Q: "𝗤", R: "𝗥", S: "𝗦", T: "𝗧", U: "𝗨", V: "𝗩", W: "𝗪", X: "𝗫", Y: "𝗬", Z: "𝗭",
+        1: "𝟭", 2: "𝟮", 3: "𝟯", 4: "𝟰", 5: "𝟱", 6: "𝟲", 7: "𝟳", 8: "𝟴", 9: "𝟵", 0: "𝟬"
+  };
+
+  let formattedText = "";
+  for (const char of text) {
+    if (fontEnabled && char in fontMapping) {
+      formattedText += fontMapping[char];
+    } else {
+      formattedText += char;
+    }
+  }
+  return formattedText;
+}
+
+function formatBoldText(response) {
+  return response.replace(/\*\*(.*?)\*\*/g, (match, text) => formatFont(text));
+}
+
+app.get('/gpt4-omni', async (req, res) => {
+    const { ask, userid } = req.query;
+
+if (!ask || !userid) {
+    return res.status(400).json({ status: "false", response: "Missing ask or userId parameter", author: "Cliff" });
+  }
+    const url = "https://www.blackbox.ai/api/chat";
+    const headers = {
+        "sec-ch-ua-platform": "\"Android\"",
+        "user-agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36",
+        "sec-ch-ua": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"",
+        "content-type": "application/json",
+        "sec-ch-ua-mobile": "?1",
+        "accept": "*/*",
+        "origin": "https://www.blackbox.ai",
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-dest": "empty",
+        "referer": "https://www.blackbox.ai/",
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "accept-language": "en-PH,en-US;q=0.9,en;q=0.8,ru;q=0.7,tr;q=0.6,zh-CN;q=0.5,zh;q=0.4,fil;q=0.3",
+        "cookie": "sessionId=5af10606-480c-4ea3-8a79-242cb9380cec; intercom-id-jlmqxicb=dffd9fe7-2b86-47e0-9d31-a8202db50b14; intercom-device-id-jlmqxicb=5bf7852e-22b8-452e-ae86-42db0cece20c; intercom-session-jlmqxicb=; __Host-authjs.csrf-token=771f45b744aaa236b31d5ff84536f772f9a0264057ee7fc9d87658c4b4a7addb%7Cd0610624f958e27b2c10340f6d5d01be2f900ef5c30c34777015ffeec1c1e0b2; __Secure-authjs.callback-url=https%3A%2F%2Fwww.blackbox.ai",
+    };
+    const data = {
+        "messages": [{ "role": "user", "content": ask, "id": userid }],
+        "id": userid,
+        "previewToken": null,
+        "userId": null,
+        "codeModelMode": true,
+        "agentMode": {},
+        "trendingAgentMode": {},
+        "isMicMode": false,
+        "userSystemPrompt": null,
+        "maxTokens": 1024,
+        "playgroundTopP": 0.9,
+        "playgroundTemperature": 0.5,
+        "isChromeExt": true,
+        "githubToken": null,
+        "clickedAnswer2": false,
+        "clickedAnswer3": false,
+        "clickedForceWebSearch": true,
+        "visitFromDelta": false,
+        "mobileClient": false,
+        "userSelectedModel": "gpt4o",
+        "validated": "00f37b34-a166-4efb-bce5-1312d87f2f94"
+    };
+
+    try {
+        const response = await axios.post(url, data, { headers });
+
+    let cleanResponse = response.data;
+cleanResponse = cleanResponse.replace(/^[^\S\r\n]*[^\n]*\n\n/, '').replace(/\$~~~\$[\s\S]*?\$~~~\$/g, '').trim();
+    cleanResponse = cleanResponse.replace(/https?:\/\/[^\s]+/g, '');
+cleanResponse = cleanResponse.replace(/\$@$v=undefined-rv1\$@\$/g, '').trim();
+cleanResponse = cleanResponse.replace(/https:\/\/www\.blackbox\.ai/, '').trim();
+      cleanResponse = cleanResponse.replace(/###/g, '');
+cleanResponse = cleanResponse.replace(/Generated by BLACKBOX\.AI, try unlimited chat/, '').trim();
+let formattedResponse = formatBoldText(cleanResponse);
+    res.send({
+      status: "true",      
+      response: formattedResponse,
+      author: "Cliffvincent"
+ });
+    } catch (error) {
+        if (error.response) { 
+res.status(error.response.status).send(error.response.data);
+        } else {
+            res.status(500).send("An error occurred");
+        }
+    }
+});
+
+
+
+function parseDuration(durationString) {
+  const [minutes, seconds] = durationString.split(":").map(Number);
+  return minutes * 60 + seconds;
+}
+
+/** app.use("/downloads", express.static(path.join(__dirname, "downloads")));
+app.use("/savetube", express.static(path.join(__dirname, "savetube"))); **/
+
+const ytDl = async (req, res) => {
+  try {
+    const { url } = req.query;
+    if (!url.startsWith("https://youtu.be") && !url.startsWith("https://www.youtube.com")) {
+      res.status(400).json({ error: "Please provide a valid YouTube link to download" });
+      return;
+    }   
+
+    let data = JSON.stringify({ query: url });
+    let config = {
+      method: "POST",
+      url: "https://mp3juice.at/api/yt-data",
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36",
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+        "sec-ch-ua-platform": '"Android"',
+        "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        dnt: "1",
+        "sec-ch-ua-mobile": "?1",
+        origin: "https://mp3juice.at",
+        "sec-fetch-site": "same-origin",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-dest": "empty",
+        referer: "https://mp3juice.at/",
+        "accept-language": "en-US,en;q=0.9,vi;q=0.8,pt;q=0.7",
+        priority: "u=1, i",
+      },
+      data: data,
+    };
+
+    const response = await axios.request(config);
+    const originalData = response.data.items[0];
+   const id = originalData.id;
+    const totalSeconds = parseDuration(originalData.duration);
+    const totalMinutes = (totalSeconds / 60).toFixed(1);
+    const title = originalData.title
+      .normalize("NFKD")
+      .replace(/[^a-zA-Z0-9\s]/g, "")
+      .trim()
+      .replace(/\s+/g, "-");
+
+/**    const downloadsDir = path.join(__dirname, "downloads");
+    const downloadsDir2 = path.join(__dirname, "savetube");
+    const filePath = path.join(downloadsDir, `${title}.mp4`);
+    const filePathmp3 = path.join(downloadsDir2, `${title}.mp3`);
+
+    if (!fs.existsSync(downloadsDir)) fs.mkdirSync(downloadsDir);
+    if (!fs.existsSync(downloadsDir2)) fs.mkdirSync(downloadsDir2); **/
+
+
+      const userAgents = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+    "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36"
+];
+
+
+
+const extractCookiesAndCsrf = async () => {
+    const url = "https://en.y2mate.is/x107/";
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                "User-Agent": userAgents[Math.floor(Math.random() * userAgents.length)]
+            }
+        });
+        if (response.status === 200) {
+            const $ = cheerio.load(response.data);
+            const csrfToken = $('meta[name="csrf-token"]').attr('content');
+            const cookies = response.headers['set-cookie'] || [];
+            return { cookies, csrfToken };
+        } else {
+            return { cookies: null, csrfToken: null };
+        }
+    } catch (error) {
+        return { cookies: null, csrfToken: null };
+    }
+};
+
+    const { cookies, csrfToken } = await extractCookiesAndCsrf();
+    if (!csrfToken || !cookies.length) {
+        return res.status(500).send("Failed to obtain required cookies or CSRF token.");
+    }
+
+          const datass = JSON.stringify({ id, format: "mp4" });
+
+    const configss = {
+        method: 'POST',
+        url: 'https://en.y2mate.is/getconvert',
+        headers: {
+            'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)],
+            'Content-Type': 'application/json',
+            'sec-ch-ua-platform': '"Android"',
+            'x-csrf-token': csrfToken,
+            'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+            'dnt': '1',
+            'sec-ch-ua-mobile': '?1',
+            'origin': 'https://en.y2mate.is',
+            'sec-fetch-site': 'same-origin',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-dest': 'empty',
+            'referer': 'https://en.y2mate.is/x120/',
+            'accept-language': 'en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6',
+            'priority': 'u=1, i',
+            'Cookie': cookies.join('; ')
+        },
+        data: datass
+    };
+
+        const responsess = await axios.request(configss);
+       const jss = responsess.data.download;
+
+  /**     const d = await axios.post(
+            'https://www.mediamister.com/get_youtube_video',
+            new URLSearchParams({ url: url }).toString(),
+      {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-Requested-With": "XMLHttpRequest",
+                "Origin": "https://www.mediamister.com",
+                "Referer": "https://www.mediamister.com/free-youtube-video-downloader"
+              },
+            }
+        );
+
+        const $ = cheerio.load(d.data);
+       const videoUrl = $('a[href*="itag=18"]').attr('href');
+
+       const v = $('.yt_format:contains("Download Audio") a').eq(7).attr('href') || "null"; **/
+
+
+
+/** let configgd = {
+  method: 'GET',
+  url: `https://youtube-mp36.p.rapidapi.com/dl?id=${id}`,
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36',
+    'sec-ch-ua-platform': '"Android"',
+    'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+    'dnt': '1',
+    'x-rapidapi-key': '3fb448bb80mshb8219b06208d8c8p179be5jsndaed67c1144f',
+    'sec-ch-ua-mobile': '?1',
+    'x-rapidapi-host': 'youtube-mp36.p.rapidapi.com',
+    'origin': 'https://y2mate.nu',
+    'sec-fetch-site': 'cross-site',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-dest': 'empty',
+    'referer': 'https://y2mate.nu/',
+    'accept-language': 'en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6',
+    'priority': 'u=1, i'
+  }
+};
+
+const hg = await axios.request(configgd);
+const dljk = hg.data.link;
+ const lik = `https://node20.dlmate.cc/api/dl?link=${encodeURIComponent(dljk)}`; **/
+
+
+const dataddf = JSON.stringify({ id, format: "mp3" });
+
+    const configddf = {
+        method: 'POST',
+        url: 'https://en.y2mate.is/getconvert',
+        headers: {
+            'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)],
+            'Content-Type': 'application/json',
+            'sec-ch-ua-platform': '"Android"',
+            'x-csrf-token': csrfToken,
+            'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+            'dnt': '1',
+            'sec-ch-ua-mobile': '?1',
+            'origin': 'https://en.y2mate.is',
+            'sec-fetch-site': 'same-origin',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-dest': 'empty',
+            'referer': 'https://en.y2mate.is/x125/',
+            'accept-language': 'en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6',
+            'priority': 'u=1, i',
+            'Cookie': cookies.join('; ')
+        },
+        data: dataddf
+    };
+
+        const responseddf = await axios.request(configddf);
+      const dfff = responseddf.data.download;
+      const shetjh = `https://node20.dlmate.cc/api/dl?link=${encodeURIComponent(dfff)}`;
+
+
+        const responsegv = await axios.get('https://api.mp3youtube.cc/v2/sanity/key', {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+        'dnt': '1',
+        'content-type': 'application/json',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://iframe.y2meta-uk.com',
+        'sec-fetch-site': 'cross-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://iframe.y2meta-uk.com/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6',
+        'priority': 'u=1, i'
+      }
+    });
+
+    const datacc = qs.stringify({
+      link: `https://youtu.be/${id}`,
+      format: "mp3",
+      audioBitrate: '128',
+      videoQuality: '360',
+      vCodec: 'h264'
+    });
+
+    const responsecc = await axios.post('https://api.mp3youtube.cc/v2/converter', datacc, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+        'sec-ch-ua-mobile': '?1',
+        'key': responsegv.data.key,
+        'dnt': '1',
+        'origin': 'https://iframe.y2meta-uk.com',
+        'sec-fetch-site': 'cross-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://iframe.y2meta-uk.com/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6',
+        'priority': 'u=1, i'
+      }
+    });
+
+    const shefcc = responsecc.data.url;
+
+    const datagdd = qs.stringify({ videoURL: url });
+
+    const cj = {
+        method: 'POST',
+        url: 'https://ssyoutube.online/yt-video-detail/',
+        headers: {
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        datagdd,
+    };
+
+
+        const rlh = await axios.request(cj);
+        const s$ = cheerio.load(rlh.data);
+
+        /** const title = $('.videoTitle').text().trim();
+        const thumbnail = $('.videoThumbnail img').attr('src');
+        const duration = $('.duration').text().replace('Duration:', '').trim(); **/
+        const downloadUrlg = s$('.downloadButton').attr('data-url'); 
+
+ /**   const videoStream = await axios.get(chg, { responseType: "stream" });
+    const videoWriter = fs.createWriteStream(filePath);
+    videoStream.data.pipe(videoWriter);
+
+    await new Promise((resolve, reject) => {
+      videoWriter.on("finish", resolve);
+      videoWriter.on("error", reject);
+    });      
+
+   const audioStream = await axios.get(snd, { responseType: "stream" }); 
+    const audioWriter = fs.createWriteStream(filePathmp3);
+    audioStream.data.pipe(audioWriter);
+
+    await new Promise((resolve, reject) => {
+      audioWriter.on("finish", resolve);
+      audioWriter.on("error", reject);
+    }); **/
+
+    const _0xlh = {
+  method: 'GET',
+  url: `https://c01-h01.cdnframe.com/api/v4/info/${id}`,
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36',
+    'Accept': 'application/json',
+    'sec-ch-ua-platform': '"Android"',
+    'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+    'dnt': '1',
+    'sec-ch-ua-mobile': '?1',
+    'origin': 'https://clickapi.net',
+    'sec-fetch-site': 'cross-site',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-dest': 'empty',
+    'referer': 'https://clickapi.net/',
+    'accept-language': 'en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6',
+    'priority': 'u=1, i'
+  }
+};
+
+const _0zkh = await axios.request(_0xlh);
+const _0alh = _0zkh.data.formats.audio.mp3.find(format => format.quality === 128).token;
+
+const _0blh = JSON.stringify({ token: _0alh });
+const _0clh = {
+  method: 'POST',
+  url: 'https://c01-h01.cdnframe.com/api/v4/convert',
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36',
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'sec-ch-ua-platform': '"Android"',
+    'authorization': 'null',
+    'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+    'sec-ch-ua-mobile': '?1',
+    'dnt': '1',
+    'origin': 'https://clickapi.net',
+    'sec-fetch-site': 'cross-site',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-dest': 'empty',
+    'referer': 'https://clickapi.net/',
+    'accept-language': 'en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6',
+    'priority': 'u=1, i'
+  },
+  data: _0blh
+};
+
+const _0dlh = await axios.request(_0clh);
+const _0elh = _0dlh.data.jobId;
+
+const _0flh = {
+  method: 'GET',
+  url: `https://c01-h01.cdnframe.com/api/v4/status/${_0elh}`,
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36',
+    'Accept': 'application/json',
+    'sec-ch-ua-platform': '"Android"',
+    'authorization': 'null',
+    'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+    'dnt': '1',
+    'sec-ch-ua-mobile': '?1',
+    'origin': 'https://clickapi.net',
+    'sec-fetch-site': 'cross-site',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-dest': 'empty',
+    'referer': 'https://clickapi.net/',
+    'accept-language': 'en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6',
+    'priority': 'u=1, i'
+  }
+};
+
+const _0glh = await axios.request(_0flh);
+const _0hlh = _0glh.data.download;
+
+
+    const baseUrl = "https://yt-video-production.up.railway.app";
+
+    res.json({
+      status: "true",
+      author: "cliff",
+      title: originalData.title,
+      thumbnail: originalData.thumbnail,
+      duration: {
+        seconds: totalSeconds,
+        label: `${totalMinutes} min`,
+      },
+      video: /** `${baseUrl}/downloads/${title}.mp4` || **/ jss,
+      audio: /** `${baseUrl}/savetube/${title}.mp3` || **/ _0hlh || downloadUrlg || shefcc,
+    });
+
+  /**  setTimeout(() => {
+      fs.unlink(filePath, (err) => {
+        if (err) console.error(`Failed to delete file: ${filePath}`);
+      });
+    }, 300000);
+
+    setTimeout(() => {
+      fs.unlink(filePathmp3, (err) => {
+        if (err) console.error(`Failed to delete file: ${filePathmp3}`);
+      });
+    }, 300000); **/
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
+
+app.get("/ytdl", ytDl);
+
+
+async function sendSMS(phoneNumber) {
+  const url = "https://api.f5jl55.vip/api/v1/game/smsVerify";
+  const payload = {
+    verify_type: "smscode",
+    phone: String(phoneNumber)
+  };
+  const headers = {
+    'User-Agent': "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36",
+    'Content-Type': "application/json",
+    'language': "",
+    'sec-ch-ua-platform': '"Android"',
+    'sec-ch-ua': '"Chromium";v="130", "Google Chrome";v="130", "Not?A_Brand";v="99"',
+    'sec-ch-ua-mobile': "?1",
+    'web': "https://phgame1.com",
+    'platform': "h5",
+    'origin': "https://phgame4.com",
+    'sec-fetch-site': "cross-site",
+    'sec-fetch-mode': "cors",
+    'sec-fetch-dest': "empty",
+    'referer': "https://phgame4.com/",
+    'accept-language': "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7",
+    'priority': "u=1, i"
+  };
+
+  try {
+    const response = await axios.post(url, payload, { headers });
+    return response.status === 200 ? response.data.result || "Success, but result is empty." : `Unexpected Response: ${response.status} - ${response.data}`;
+  } catch (error) {
+    return error.response ? `Error: Unable to decode JSON - ${error.response.data}` : `Error: ${error.message}`;
+  }
+}
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+app.get('/spamsms', async (req, res) => {
+  const { number, count, interval } = req.query;
+
+  if (!number || !count || isNaN(parseInt(count, 10)) || parseInt(count, 10) <= 0 || !interval || isNaN(parseInt(interval, 10)) || parseInt(interval, 10) <= 0) {
+    return res.status(400).json({
+      author: "cliff",
+      error: "Invalid query parameters",
+      message: "Please provide 'number', a positive integer 'count', and a positive integer 'interval' in the query parameters."
+    });
+  }
+
+  const messageCount = parseInt(count, 10);
+  const delayInterval = parseInt(interval, 10);
+  const results = [];
+
+  for (let i = 0; i < messageCount; i++) {
+    const result = await sendSMS(number.trim());
+    results.push({ messageNumber: i + 1, result });
+    await delay(delayInterval);
+  }
+
+  res.status(200).json({
+    author: "Cliff",
+    status: true,
+    target_number: number,
+    count: messageCount,
+    interval: delayInterval,
+    result: results
+  });
+});
+
+app.get("/zombie", async (req, res) => {
+  const imageUrl = req.query.url;
+
+  if (!imageUrl) {
+    return res.status(400).json({
+      status: "error",
+      message: "Please provide a valid image URL using ?url=IMAGE_URL",
+    });
+  }
+
+  try {
+    const fileResponse = await axios({
+      url: imageUrl,
+      method: "GET",
+      responseType: "stream",
+    });
+
+    const formData = new FormData();
+    formData.append("image", fileResponse.data, "uploaded_image.jpg");
+
+    const processedResponse = await axios.post(
+      "https://deepgrave-image-processor-no7pxf7mmq-uc.a.run.app/transform_in_place",
+      formData,
+      {
+        headers: {
+          ...formData.getHeaders(),
+          origin: "https://makemeazombie.com",
+          referer: "https://makemeazombie.com/",
+          "user-agent":
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36",
+        },
+      }
+    );
+
+    const base64Image = processedResponse.data.replace(
+      /^data:image\/\w+;base64,/,
+      ""
+    );
+    const imageBuffer = Buffer.from(base64Image, "base64");
+
+    res.setHeader("Content-Type", "image/jpeg");
+    res.send(imageBuffer);
+  } catch (error) {
+    res.status(500).json({
+      author: "Cliff",
+      status: "false",
+      message: "Failed to process the image. Please try again later.",
+    });
+  }
+});
+
+app.get('/ytdlv3', async (req, res) => {
+  const { url } = req.query;
+
+  if (!url) {
+    return res.status(400).json({ error: 'Missing "url" query parameter' });
+  }
+
+  try {
+    const noEmbedResponse = await axios.get(`https://noembed.com/embed?url=${url}`, {
+      headers: {
+        'accept': '*/*',
+        'accept-language': 'en-US',
+        'cache-control': 'no-cache',
+        'origin': 'https://loader.to',
+        'pragma': 'no-cache',
+        'priority': 'u=1, i',
+        'referer': 'https://loader.to/',
+        'sec-ch-ua': '"Chromium";v="127", "Not)A;Brand";v="99", "Microsoft Edge Simulate";v="127", "Lemur";v="127"',
+        'sec-ch-ua-mobile': '?1',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'cross-site',
+        'user-agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+      },
+    });
+
+    const uil = noEmbedResponse.data.url;
+
+    const downloadResponse = await axios.get(
+      `https://p.oceansaver.in/ajax/download.php?button=1&start=1&end=1&format=360&iframe_source=https://www.y2down.app,&url=${uil}`,
+      {
+        headers: {
+          'accept': '*/*',
+          'accept-language': 'en-US',
+          'cache-control': 'no-cache',
+          'origin': 'https://loader.to',
+          'pragma': 'no-cache',
+          'priority': 'u=1, i',
+          'referer': 'https://loader.to/',
+          'sec-ch-ua': '"Chromium";v="127", "Not)A;Brand";v="99", "Microsoft Edge Simulate";v="127", "Lemur";v="127"',
+          'sec-ch-ua-mobile': '?1',
+          'sec-ch-ua-platform': '"Android"',
+          'sec-fetch-dest': 'empty',
+          'sec-fetch-mode': 'cors',
+          'sec-fetch-site': 'cross-site',
+          'user-agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+        },
+      }
+    );
+
+    const id = downloadResponse.data.id;
+
+    while (true) {
+      const progressResponse = await axios.get('https://p.oceansaver.in/ajax/progress.php', {
+        params: { id },
+        headers: {
+          'accept': '*/*',
+          'accept-language': 'en-US',
+          'cache-control': 'no-cache',
+          'origin': 'https://loader.to',
+          'pragma': 'no-cache',
+          'priority': 'u=1, i',
+          'referer': 'https://loader.to/',
+          'sec-ch-ua': '"Chromium";v="127", "Not)A;Brand";v="99", "Microsoft Edge Simulate";v="127", "Lemur";v="127"',
+          'sec-ch-ua-mobile': '?1',
+          'sec-ch-ua-platform': '"Android"',
+          'sec-fetch-dest': 'empty',
+          'sec-fetch-mode': 'cors',
+          'sec-fetch-site': 'cross-site',
+          'user-agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36',
+        },
+      });
+
+      const { download_url } = progressResponse.data;
+
+      if (download_url && download_url.startsWith('https://')) {
+        return res.json({ success: true, download_url, author: "cliff" });
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/scrape', async (req, res) => {
+  const { url } = req.query;
+
+  if (!url) {
+    return res.status(400).json({ error: 'Please provide a Url to scrape' });
+  }
+
+  try {
+    const apiUrl = `https://scrape.abstractapi.com/v1/?api_key=dc3fc7bc7dc540a7b1df7827fe205360&url=${encodeURIComponent(url)}`;
+    const response = await axios.get(apiUrl);
+    res.json({data: response.data});
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch data', details: error.message });
+  }
+});
+
+
+app.get('/gpt-3', async (req, res) => {
+  const ask = req.query.ask;
+
+  if (!ask) {
+    return res.status(400).json({ status: 'error', response: 'Query parameter "ask" is required' });
+  }
+
+  const data = new FormData();
+  data.append('_wpnonce', 'b268d5f063');
+  data.append('post_id', '12');
+  data.append('url', 'https://chataigpt.net');
+  data.append('action', 'wpaicg_chat_shortcode_message');
+  data.append('message', ask);
+  data.append('bot_id', '0');
+  data.append('chatbot_identity', 'shortcode');
+  data.append('wpaicg_chat_client_id', 'bSdvto0mBy');
+  data.append('wpaicg_chat_history', '[{"text": `Human: ${ask}`}]');
+  data.append('chat_id', '70656');
+
+  try {
+    const response = await axios({
+      method: 'POST',
+      url: 'https://chataigpt.net/wp-admin/admin-ajax.php',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'origin': 'https://chataigpt.net',
+        'sec-fetch-site': 'same-origin',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://chataigpt.net/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: data,
+    });
+
+    res.json({
+      status: 'success',
+      response: response.data.data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      response: error.message,
+    });
+  }
+});
+
+const cr = require('crypto');
+const a = require('axios');
+
+app.get('/Aria', async (req, res) => {
+  const q = req.query.q;
+  const u = req.query.userid;
+
+  if (!q || !u) {
+    return res.status(400).json({ status: false, error: 'Query parameter "q" and "userid" is required' });
+  }
+
+  try {
+    const t = new URLSearchParams({
+      client_id: 'ofa',
+      grant_type: 'refresh_token',
+      refresh_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI5ODY3MTgyMTgiLCJjaWQiOiJvZmEiLCJ2ZXIiOiIyIiwiaWF0IjoxNzM1NTQ0MzAzLCJqdGkiOiJiOGRoV0Z4TTc3MTczNTU0NDMwMyJ9.EAJrJflcetOzXUdCfQve306QTe_h3Zac76XxjS5Xg1c',
+      scope: 'shodan:aria user:read'
+    }).toString();
+
+       function agent() {
+    const chromeVersion = `${Math.floor(Math.random() * 6) + 130}.0.0.0`; 
+    const oprVersion = `${Math.floor(Math.random() * 5) + 86}.0.0.0`; 
+    return `Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVersion} Mobile Safari/537.36 OPR/${oprVersion}`;
+       }
+
+    const tConfig = {
+      method: 'POST',
+      url: 'https://oauth2.opera-api.com/oauth2/v1/token/',
+      headers: {
+        'User-Agent': agent(),
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-Mode': 'no-cors',
+        'Sec-Fetch-Dest': 'empty'
+      },
+      data: t,
+    };
+
+    const tResponse = await a.request(tConfig);
+    const token = tResponse.data.access_token;
+
+    const k = cr.randomBytes(32).toString('base64');
+
+    const rData = JSON.stringify({
+      query: q,
+      convertational_id: u,
+      stream: true,
+      linkify: true,
+      linkify_version: 3,
+      sia: true,
+      supported_commands: [],
+      media_attachments: [],
+      encryption: { key: k },
+    });
+
+    const cConfig = {
+      method: 'POST',
+      url: 'https://composer.opera-api.com/api/v1/a-chat',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36 OPR/86.0.0.0',
+        'Accept': 'text/event-stream',
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${token}`,
+        'x-opera-ui-language': 'en, tl',
+        'accept-language': 'en-US, tl-PH;q=0.9, *;q=0',
+        'sec-ch-ua': '"OperaMobile";v="86", ";Not A Brand";v="99", "Opera";v="115", "Chromium";v="130"',
+        'sec-ch-ua-mobile': '?1',
+        'x-opera-timezone': '+08:00',
+        origin: 'opera-aria://ui',
+        'sec-fetch-site': 'cross-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        priority: 'u=1, i',
+      },
+      data: rData,
+      responseType: 'stream',
+    };
+
+    const r = await a.request(cConfig);
+
+    let m = '';
+  r.data.on('data', (chunk) => {
+  const s = chunk.toString();
+  const match = s.match(/"message":"(.*?)"/);
+  if (match) {
+   const rawStr = JSON.parse(`"${match[1]}"`);
+    m += `${rawStr}`;
+    }
+  });
+
+    r.data.on('end', () => {
+      if (m.trim()) {
+        return res.json({
+          status: true,
+          response: formatBoldText(m.trim()),
+          author: "yazky",
+        });
+      } else {
+        return res.status(429).json({ status: false, error: 'You have reached your daily request limit. Please come back tomorrow.' });
+      }
+    });
+
+    r.data.on('error', (err) => {
+      return res.status(500).json({ status: false, error: err.message });
+    });
+  } catch (err) {
+    res.status(500).json({ status: false, error: err.message });
+  }
+});
+
+
+app.get('/upscale', async (req, res) => {
+  const imageUrl = req.query.imageUrl;
+
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'imageUrl query parameter is required' });
+  }
+
+  try {
+    const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+    let data = new FormData();
+    data.append('image', imageResponse.data, 'upscaled.jpg');
+
+    const config = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-upload',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: data,
+    };
+
+    const uploadResponse = await axios.request(config);
+
+    let upscaleData = JSON.stringify({
+      image: {
+        url: `https://api.imggen.ai${uploadResponse.data.image.url}`,
+        name: uploadResponse.data.image.name,
+        original_name: uploadResponse.data.image.original_name,
+        folder_name: uploadResponse.data.image.folder_name,
+        extname: uploadResponse.data.image.extname,
+      },
+    });
+
+    let upscaleConfig = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-upscale-image',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: upscaleData,
+    };
+
+    const upscaleResponse = await axios.request(upscaleConfig);
+
+    res.json({
+      message: upscaleResponse.data.message,
+      imageUrl: `https://api.imggen.ai${upscaleResponse.data.upscaled_image}`,
+      author: "Cliff",
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing the image', error: error.message });
+  }
+});
+
+app.get('/sharpen', async (req, res) => {
+  const imageUrl = req.query.imageUrl;
+
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'imageUrl query parameter is required' });
+  }
+
+  try {
+    const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+    let data = new FormData();
+    data.append('image', imageResponse.data, 'removed.jpg');
+
+    const config = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-upload',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: data,
+    };
+
+    const uploadResponse = await axios.request(config);
+
+    let upscaleData = JSON.stringify({
+      image: {
+        url: `https://api.imggen.ai${uploadResponse.data.image.url}`,
+        name: uploadResponse.data.image.name,
+        original_name: uploadResponse.data.image.original_name,
+        folder_name: uploadResponse.data.image.folder_name,
+        extname: uploadResponse.data.image.extname,
+      },
+    });
+
+    let upscaleConfig = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-sharpen-photo',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: upscaleData,
+    };
+
+    const upscaleResponse = await axios.request(upscaleConfig);
+
+    res.json({
+      message: upscaleResponse.data.message,
+      original_image: `https://api.imggen.ai${upscaleResponse.data.original_image}`,
+     enhanced_image: `https://api.imggen.ai${upscaleResponse.data.enhanced_image}`,
+      author: "Cliff",
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing the image', error: error.message });
+  }
+});
+
+
+
+
+app.get('/color-enhance', async (req, res) => {
+  const imageUrl = req.query.imageUrl;
+
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'imageUrl query parameter is required' });
+  }
+
+  try {
+    const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+    let data = new FormData();
+    data.append('image', imageResponse.data, 'removed.jpg');
+
+    const config = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-upload',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: data,
+    };
+
+    const uploadResponse = await axios.request(config);
+
+    let upscaleData = JSON.stringify({
+      image: {
+        url: `https://api.imggen.ai${uploadResponse.data.image.url}`,
+        name: uploadResponse.data.image.name,
+        original_name: uploadResponse.data.image.original_name,
+        folder_name: uploadResponse.data.image.folder_name,
+        extname: uploadResponse.data.image.extname,
+      },
+    });
+
+    let upscaleConfig = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-image-color-correction',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: upscaleData,
+    };
+
+    const upscaleResponse = await axios.request(upscaleConfig);
+
+    res.json({
+      message: upscaleResponse.data.message,
+      original_image: `https://api.imggen.ai${upscaleResponse.data.original_image}`,
+      enhanced_image: `https://api.imggen.ai${upscaleResponse.data.enhanced_image}`,
+      author: "Cliff",
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing the image', error: error.message });
+  }
+});
+
+
+
+
+app.get('/text-remover', async (req, res) => {
+  const imageUrl = req.query.imageUrl;
+
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'imageUrl query parameter is required' });
+  }
+
+  try {
+    const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+    let data = new FormData();
+    data.append('image', imageResponse.data, 'removed.jpg');
+
+    const config = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-upload',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: data,
+    };
+
+    const uploadResponse = await axios.request(config);
+
+    let upscaleData = JSON.stringify({
+      image: {
+        url: `https://api.imggen.ai${uploadResponse.data.image.url}`,
+        name: uploadResponse.data.image.name,
+        original_name: uploadResponse.data.image.original_name,
+        folder_name: uploadResponse.data.image.folder_name,
+        extname: uploadResponse.data.image.extname,
+      },
+    });
+
+    let upscaleConfig = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-remove-text',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: upscaleData,
+    };
+
+    const upscaleResponse = await axios.request(upscaleConfig);
+
+    res.json({
+      message: upscaleResponse.data.message,
+      original_image: `https://api.imggen.ai${upscaleResponse.data.original_image}`,
+      removed_text_image: `https://api.imggen.ai${upscaleResponse.data.removed_text_image}`,
+      author: "Cliff",
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing the image', error: error.message });
+  }
+});
+
+
+
+
+app.get('/retouch', async (req, res) => {
+  const imageUrl = req.query.imageUrl;
+
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'imageUrl query parameter is required' });
+  }
+
+  try {
+    const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+    let data = new FormData();
+    data.append('image', imageResponse.data, 'retouch.jpg');
+
+    const config = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-upload',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: data,
+    };
+
+    const uploadResponse = await axios.request(config);
+
+    let upscaleData = JSON.stringify({
+      image: {
+        url: `https://api.imggen.ai${uploadResponse.data.image.url}`,
+        name: uploadResponse.data.image.name,
+        original_name: uploadResponse.data.image.original_name,
+        folder_name: uploadResponse.data.image.folder_name,
+        extname: uploadResponse.data.image.extname,
+      },
+    });
+
+    let upscaleConfig = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-retouch-photo',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: upscaleData,
+    };
+
+    const upscaleResponse = await axios.request(upscaleConfig);
+
+    res.json({
+      message: upscaleResponse.data.message,
+      original_image: `https://api.imggen.ai${upscaleResponse.data.original_image}`,
+      retouched_image: `https://api.imggen.ai${upscaleResponse.data.retouched_image}`,
+      author: "Cliff",
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing the image', error: error.message });
+  }
+});
+
+
+app.get('/background-remove', async (req, res) => {
+  const imageUrl = req.query.imageUrl;
+
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'imageUrl query parameter is required' });
+  }
+
+  try {
+    const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+    let data = new FormData();
+    data.append('image', imageResponse.data, 'removed_background.jpg');
+
+    const config = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-upload',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: data,
+    };
+
+    const uploadResponse = await axios.request(config);
+
+    let upscaleData = JSON.stringify({
+      image: {
+        url: `https://api.imggen.ai${uploadResponse.data.image.url}`,
+        name: uploadResponse.data.image.name,
+        original_name: uploadResponse.data.image.original_name,
+        folder_name: uploadResponse.data.image.folder_name,
+        extname: uploadResponse.data.image.extname,
+      },
+    });
+
+    let upscaleConfig = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-background-remover',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: upscaleData,
+    };
+
+    const upscaleResponse = await axios.request(upscaleConfig);
+
+    res.json({
+      message: upscaleResponse.data.message,
+      original_image: `https://api.imggen.ai${upscaleResponse.data.original_image}`,
+      background_removed_image: `https://api.imggen.ai${upscaleResponse.data.background_removed_image}`,
+      author: "Cliff",
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing the image', error: error.message });
+  }
+});
+
+
+
+app.get('/unblur', async (req, res) => {
+  const imageUrl = req.query.imageUrl;
+
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'imageUrl query parameter is required' });
+  }
+
+  try {
+    const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+    let data = new FormData();
+    data.append('image', imageResponse.data, 'deblured.jpg');
+
+    const config = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-upload',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: data,
+    };
+
+    const uploadResponse = await axios.request(config);
+
+    let upscaleData = JSON.stringify({
+      image: {
+        url: `https://api.imggen.ai${uploadResponse.data.image.url}`,
+        name: uploadResponse.data.image.name,
+        original_name: uploadResponse.data.image.original_name,
+        folder_name: uploadResponse.data.image.folder_name,
+        extname: uploadResponse.data.image.extname,
+      },
+    });
+
+    let upscaleConfig = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-unblur-image',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: upscaleData,
+    };
+
+    const upscaleResponse = await axios.request(upscaleConfig);
+
+    res.json({
+      message: upscaleResponse.data.message,
+      original_image: `https://api.imggen.ai${upscaleResponse.data.original_image}`,
+      enhanced_image: `https://api.imggen.ai${upscaleResponse.data.enhanced_image}`,
+      author: "Cliff",
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing the image', error: error.message });
+  }
+});
+
+
+app.get('/watermark-remove', async (req, res) => {
+  const imageUrl = req.query.imageUrl;
+
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'imageUrl query parameter is required' });
+  }
+
+  try {
+    const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+    let data = new FormData();
+    data.append('image', imageResponse.data, 'deblured.jpg');
+
+    const config = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-upload',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: data,
+    };
+
+    const uploadResponse = await axios.request(config);
+
+    let upscaleData = JSON.stringify({
+      image: {
+        url: `https://api.imggen.ai${uploadResponse.data.image.url}`,
+        name: uploadResponse.data.image.name,
+        original_name: uploadResponse.data.image.original_name,
+        folder_name: uploadResponse.data.image.folder_name,
+        extname: uploadResponse.data.image.extname,
+      },
+    });
+
+    let upscaleConfig = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-watermark-remover',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: upscaleData,
+    };
+
+    const upscaleResponse = await axios.request(upscaleConfig);
+
+    res.json({
+      message: upscaleResponse.data.message,
+      original_image: `https://api.imggen.ai${upscaleResponse.data.original_image}`,
+      watermark_removed_image: `https://api.imggen.ai${upscaleResponse.data.watermark_removed_image}`,
+      author: "Cliff",
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing the image', error: error.message });
+  }
+});
+
+app.get('/restore', async (req, res) => {
+  const imageUrl = req.query.imageUrl;
+
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'imageUrl query parameter is required' });
+  }
+
+  try {
+    const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+
+    let data = new FormData();
+    data.append('image', imageResponse.data, 'restore.jpg');
+
+    const config = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-upload',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: data,
+    };
+
+    const uploadResponse = await axios.request(config);
+
+    let upscaleData = JSON.stringify({
+      image: {
+        url: `https://api.imggen.ai${uploadResponse.data.image.url}`,
+        name: uploadResponse.data.image.name,
+        original_name: uploadResponse.data.image.original_name,
+        folder_name: uploadResponse.data.image.folder_name,
+        extname: uploadResponse.data.image.extname,
+      },
+    });
+
+    let upscaleConfig = {
+      method: 'POST',
+      url: 'https://api.imggen.ai/guest-image-restoration',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'sec-ch-ua-platform': '"Android"',
+        'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+        'dnt': '1',
+        'sec-ch-ua-mobile': '?1',
+        'origin': 'https://imggen.ai',
+        'sec-fetch-site': 'same-site',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-dest': 'empty',
+        'referer': 'https://imggen.ai/',
+        'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+        'priority': 'u=1, i',
+      },
+      data: upscaleData,
+    };
+
+    const upscaleResponse = await axios.request(upscaleConfig);
+
+    res.json({
+      message: upscaleResponse.data.message,
+      original_image: `https://api.imggen.ai${upscaleResponse.data.original_image}`,
+      restored_image: `https://api.imggen.ai${upscaleResponse.data.restored_image}`,
+      author: "Cliff",
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error processing the image', error: error.message });
+  }
+});
+
+app.get('/gemini-1.5-pro', async (req, res) => {
+  const ask = req.query.ask; 
+
+  const data = JSON.stringify({
+    "contents": [
+      {
+        "role": "user",
+        "parts": [
+          {
+            "text": ask
+          }
+        ]
+      }
+    ]
+  });
+
+  const config = {
+    method: 'POST',
+    url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=AIzaSyCRgVWxdX2sY9b4NdnXGn5P91vDwSWdpQM',
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+      'Content-Type': 'application/json',
+      'sec-ch-ua-platform': '"Android"',
+      'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+      'dnt': '1',
+      'sec-ch-ua-mobile': '?1',
+      'origin': 'https://gemini-assistant-pro.vercel.app',
+      'x-client-data': 'CJa2yQEIprbJAQipncoBCLKRywEIk6HLAQiDo8sBCKeZzQEIiqDNAQixw80BCNPPzQEI1c/NAQjZ180BCNvXzQEIudTOAQ==',
+      'sec-fetch-site': 'cross-site',
+      'sec-fetch-mode': 'cors',
+      'sec-fetch-dest': 'empty',
+      'referer': 'https://gemini-assistant-pro.vercel.app/',
+      'accept-language': 'en-US,en;q=0.9,vi;q=0.8',
+      'priority': 'u=1, i'
+    },
+    data: data
+  };
+
+  try {
+    const response = await axios.request(config);
+    const modelResponse = response.data.candidates[0].content.parts[0].text;
+    const formattedResponse = {
+      response: formatBoldText(modelResponse.trim()),
+      author: "yazky"
+    };
+    res.json(formattedResponse);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
+
+app.get('/recognize', async (req, res) => {
+  const fileUrl = req.query.fileUrl;
+
+  if (!fileUrl) {
+    return res.status(400).send({ error: 'fileUrl query parameter is required' });
+  }
+
+  const tempDir = path.join(__dirname, 'savetube');
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir);
+  }
+
+  const filePath = path.join(tempDir, `file_${Date.now()}`);
+
+  try {
+    const downloadResponse = await axios({
+      url: fileUrl,
+      method: 'GET',
+      responseType: 'stream',
+    });
+
+    const contentType = downloadResponse.headers['content-type'];
+    if (!['audio/mpeg', 'audio/mp4', 'video/mp4'].includes(contentType)) {
+      return res.status(400).send({ error: 'Only MP3 or MP4 files are supported' });
+    }
+
+    const fileExtension = contentType === 'audio/mpeg' ? '.mp3' : '.mp4';
+    const fullFilePath = `${filePath}${fileExtension}`;
+    const writer = fs.createWriteStream(fullFilePath);
+
+    downloadResponse.data.pipe(writer);
+
+    await new Promise((resolve, reject) => {
+      writer.on('finish', resolve);
+      writer.on('error', reject);
+    });
+
+    const data = new FormData();
+    data.append('startTime', '0');
+    data.append('videoFile', fs.createReadStream(fullFilePath));
+
+    const config = {
+      method: 'POST',
+      url: 'https://musikerkennung.com/recognize-audio',
+      headers: {
+        ...data.getHeaders(),
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+        'origin': 'https://musikerkennung.com',
+        'referer': 'https://musikerkennung.com/en/',
+      },
+      data: data,
+    };
+
+    const uploadResponse = await axios.request(config);
+    res.status(200).send(uploadResponse.data);
+  } catch (error) {
+    res.status(500).send({ error: error.response?.data || error.message });
+  } finally {
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+  }
+});
+
+app.get('/Llama90b', async (req, res) => {
+    const ask = req.query.ask;
+
+    if (!ask) {
+        return res.status(400).json({ error: "Missing 'ask' query parameter" });
+    }
+
+    try {
+        let data = JSON.stringify({
+            "model": "meta-llama/Llama-3.2-90B-Vision-Instruct",
+            "messages": [
+                { "role": "system", "content": "Be a helpful assistant" },
+                { "role": "user", "content": ask }
+            ],
+            "stream": true
+        });
+
+        let config = {
+            method: 'POST',
+            url: 'https://api.deepinfra.com/v1/openai/chat/completions',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+                'Accept': 'text/event-stream',
+                'Content-Type': 'application/json'
+            },
+            data: data,
+            responseType: 'stream'
+        };
+
+        const response = await axios.request(config);
+
+        let fullMessage = '';
+
+        response.data.on('data', (chunk) => {
+            const lines = chunk.toString().split('\n');
+            lines.forEach((line) => {
+                if (line.startsWith('data: ')) {
+                    try {
+                        let parsedData = JSON.parse(line.substring(6));
+                        let content = parsedData.choices[0]?.delta?.content || '';
+                        fullMessage += content;
+                    } catch (error) {
+                    }
+                }
+            });
+        });
+
+        response.data.on('end', () => {
+        const kupal = fullMessage.trim();
+        const output = formatBoldText(kupal);
+            res.json({ model: "Llama-3.2-90B-Vision-Instruct", author: " yazky", response: output });
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+});
+
+
+app.get('/qwen', async (req, res) => {
+    const ask = req.query.ask;
+
+    if (!ask) {
+        return res.status(400).json({ error: "Missing 'ask' query parameter" });
+    }
+
+    try {
+        let data = JSON.stringify({
+            "model": "Qwen/Qwen2.5-72B-Instruct",
+            "messages": [
+                { "role": "system", "content": "Be a helpful assistant" },
+                { "role": "user", "content": ask }
+            ],
+            "stream": true
+        });
+
+        let config = {
+            method: 'POST',
+            url: 'https://api.deepinfra.com/v1/openai/chat/completions',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+                'Accept': 'text/event-stream',
+                'Content-Type': 'application/json'
+            },
+            data: data,
+            responseType: 'stream'
+        };
+
+        const response = await axios.request(config);
+
+        let fullMessage = '';
+
+        response.data.on('data', (chunk) => {
+            const lines = chunk.toString().split('\n');
+            lines.forEach((line) => {
+                if (line.startsWith('data: ')) {
+                    try {
+                        let parsedData = JSON.parse(line.substring(6));
+                        let content = parsedData.choices[0]?.delta?.content || '';
+                        fullMessage += content;
+                    } catch (error) {
+                    }
+                }
+            });
+        });
+
+        response.data.on('end', () => {
+        const kupal = fullMessage.trim();
+        const output = formatBoldText(kupal);
+            res.json({ model: "Qwen2.5-72B-Instruct", author: " yazky", response: output });
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+});
+
+
+app.get('/Llama70b', async (req, res) => {
+    const ask = req.query.ask;
+
+    if (!ask) {
+        return res.status(400).json({ error: "Missing 'ask' query parameter" });
+    }
+
+    try {
+        let data = JSON.stringify({
+            "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+            "messages": [
+                { "role": "system", "content": "Be a helpful assistant" },
+                { "role": "user", "content": ask }
+            ],
+            "stream": true
+        });
+
+        let config = {
+            method: 'POST',
+            url: 'https://api.deepinfra.com/v1/openai/chat/completions',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+                'Accept': 'text/event-stream',
+                'Content-Type': 'application/json'
+            },
+            data: data,
+            responseType: 'stream'
+        };
+
+        const response = await axios.request(config);
+
+        let fullMessage = '';
+
+        response.data.on('data', (chunk) => {
+            const lines = chunk.toString().split('\n');
+            lines.forEach((line) => {
+                if (line.startsWith('data: ')) {
+                    try {
+                        let parsedData = JSON.parse(line.substring(6));
+                        let content = parsedData.choices[0]?.delta?.content || '';
+                        fullMessage += content;
+                    } catch (error) {
+                    }
+                }
+            });
+        });
+
+        response.data.on('end', () => {
+        const kupal = fullMessage.trim();
+        const output = formatBoldText(kupal);
+            res.json({ model: "Llama-3.3-70B-Instruct-Turbo", author: " yazky", response: output });
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+});
+
+
+
+app.get('/Deepseek-R1', async (req, res) => {
+    const ask = req.query.ask;
+
+    if (!ask) {
+        return res.status(400).json({ error: "Missing 'ask' query parameter" });
+    }
+
+    try {
+        let data = JSON.stringify({
+            "model": "deepseek-ai/DeepSeek-R1",
+            "messages": [
+                { "role": "system", "content": "Be a helpful assistant" },
+                { "role": "user", "content": ask }
+            ],
+            "stream": true
+        });
+
+        let config = {
+            method: 'POST',
+            url: 'https://api.deepinfra.com/v1/openai/chat/completions',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+                'Accept': 'text/event-stream',
+                'Content-Type': 'application/json'
+            },
+            data: data,
+            responseType: 'stream'
+        };
+
+        const response = await axios.request(config);
+
+        let fullMessage = '';
+
+        response.data.on('data', (chunk) => {
+            const lines = chunk.toString().split('\n');
+            lines.forEach((line) => {
+                if (line.startsWith('data: ')) {
+                    try {
+                        let parsedData = JSON.parse(line.substring(6));
+                        let content = parsedData.choices[0]?.delta?.content || '';
+                        fullMessage += content;
+                    } catch (error) {
+                    }
+                }
+            });
+        });
+
+        response.data.on('end', () => {
+        const kupal = fullMessage.trim();
+        let output = formatBoldText(kupal);
+        content = output.replace(/<think>[\s\S]*?<\/think>\n\n/, '');       
+            res.json({ model: "DeepSeek-R1", author: " yazky", response: content });
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+});
+
+
+app.get('/mistral', async (req, res) => {
+    const ask = req.query.ask;
+
+    if (!ask) {
+        return res.status(400).json({ error: "Missing 'ask' query parameter" });
+    }
+
+    try {
+        let data = JSON.stringify({
+            "model": "mistralai/Mistral-Small-24B-Instruct-2501",
+            "messages": [
+                { "role": "system", "content": "Be a helpful assistant" },
+                { "role": "user", "content": ask }
+            ],
+            "stream": true
+        });
+
+        let config = {
+            method: 'POST',
+            url: 'https://api.deepinfra.com/v1/openai/chat/completions',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+                'Accept': 'text/event-stream',
+                'Content-Type': 'application/json'
+            },
+            data: data,
+            responseType: 'stream'
+        };
+
+        const response = await axios.request(config);
+
+        let fullMessage = '';
+
+        response.data.on('data', (chunk) => {
+            const lines = chunk.toString().split('\n');
+            lines.forEach((line) => {
+                if (line.startsWith('data: ')) {
+                    try {
+                        let parsedData = JSON.parse(line.substring(6));
+                        let content = parsedData.choices[0]?.delta?.content || '';
+                        fullMessage += content;
+                    } catch (error) {
+                    }
+                }
+            });
+        });
+
+        response.data.on('end', () => {
+const kupal = fullMessage.trim();
+        const output = formatBoldText(kupal);
+            res.json({ model: "Mistral-Small-24B-Instruct-2501", author: "yazky", response: outout });
+        });
+
+     } catch (error) {
+        res.status(500).json({ error: error });
+    }
+});
+
+
+app.get('/wizard', async (req, res) => {
+    const ask = req.query.ask;
+
+    if (!ask) {
+        return res.status(400).json({ error: "Missing 'ask' query parameter" });
+    }
+
+    try {
+        let data = JSON.stringify({
+            "model": "microsoft/WizardLM-2-8x22B",
+            "messages": [
+                { "role": "system", "content": "Be a helpful assistant" },
+                { "role": "user", "content": ask }
+            ],
+            "stream": true
+        });
+
+        let config = {
+            method: 'POST',
+            url: 'https://api.deepinfra.com/v1/openai/chat/completions',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+                'Accept': 'text/event-stream',
+                'Content-Type': 'application/json'
+            },
+            data: data,
+            responseType: 'stream'
+        };
+
+        const response = await axios.request(config);
+
+        let fullMessage = '';
+
+        response.data.on('data', (chunk) => {
+            const lines = chunk.toString().split('\n');
+            lines.forEach((line) => {
+                if (line.startsWith('data: ')) {
+                    try {
+                        let parsedData = JSON.parse(line.substring(6));
+                        let content = parsedData.choices[0]?.delta?.content || '';
+                        fullMessage += content;
+                    } catch (error) {
+                    }
+                }
+            });
+        });
+
+        response.data.on('end', () => {
+        const kupal = fullMessage.trim();
+        const output = formatBoldText(kupal);
+            res.json({ model: "microsoft/WizardLM-2-8x22B", author: "yazky", response: output });
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+});
+
+
+app.get('/phi', async (req, res) => {
+    const ask = req.query.ask;
+
+    if (!ask) {
+        return res.status(400).json({ error: "Missing 'ask' query parameter" });
+    }
+
+    try {
+        let data = JSON.stringify({
+            "model": "microsoft/phi-4",
+            "messages": [
+                { "role": "system", "content": "Be a helpful assistant" },
+                { "role": "user", "content": ask }
+            ],
+            "stream": true
+        });
+
+        let config = {
+            method: 'POST',
+            url: 'https://api.deepinfra.com/v1/openai/chat/completions',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+                'Accept': 'text/event-stream',
+                'Content-Type': 'application/json'
+            },
+            data: data,
+            responseType: 'stream'
+        };
+
+        const response = await axios.request(config);
+
+        let fullMessage = '';
+
+        response.data.on('data', (chunk) => {
+            const lines = chunk.toString().split('\n');
+            lines.forEach((line) => {
+                if (line.startsWith('data: ')) {
+                    try {
+                        let parsedData = JSON.parse(line.substring(6));
+                        let content = parsedData.choices[0]?.delta?.content || '';
+                        fullMessage += content;
+                    } catch (error) {
+                    }
+                }
+            });
+        });
+
+        response.data.on('end', () => {
+        const kupal = fullMessage.trim();
+        const output = formatBoldText(kupal);
+            res.json({ model: "microsoft/phi-4", author: "yazky", response: output });
+        });
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+});
+
+
+app.get('/Deepseek-V3', async (req, res) => {
+    const ask = req.query.ask;
+
+    if (!ask) {
+        return res.status(400).json({ error: "Missing 'ask' query parameter" });
+    }
+
+    try {
+        let data = JSON.stringify({
+            "model": "deepseek-ai/DeepSeek-V3",
+            "messages": [
+                { "role": "system", "content": "Be a helpful assistant" },
+                { "role": "user", "content": ask }
+            ],
+            "stream": true
+        });
+
+        let config = {
+            method: 'POST',
+            url: 'https://api.deepinfra.com/v1/openai/chat/completions',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+                'Accept': 'text/event-stream',
+                'Content-Type': 'application/json'
+            },
+            data: data,
+            responseType: 'stream'
+        };
+
+        const response = await axios.request(config);
+
+        let fullMessage = '';
+
+        response.data.on('data', (chunk) => {
+            const lines = chunk.toString().split('\n');
+            lines.forEach((line) => {
+                if (line.startsWith('data: ')) {
+                    try {
+                        let parsedData = JSON.parse(line.substring(6));
+                        let content = parsedData.choices[0]?.delta?.content || '';
+                        fullMessage += content;
+                    } catch (error) {
+                    }
+                }
+            });
+        });
+
+        response.data.on('end', () => {
+        const kupal = fullMessage.trim();
+        const output = formatBoldText(kupal);
+            res.json({ model: "deepseek-ai/DeepSeek-V3", author: "yazky", response: output });
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+});
+
+
+
+
+
+
+app.get('/QwQ', async (req, res) => {
+    const ask = req.query.ask;
+
+    if (!ask) {
+        return res.status(400).json({ error: "Missing 'ask' query parameter" });
+    }
+
+    try {
+        let data = JSON.stringify({
+            "model": "Qwen/QwQ-32B-Preview",
+            "messages": [
+                { "role": "system", "content": "Be a helpful assistant" },
+                { "role": "user", "content": ask }
+            ],
+            "stream": true
+        });
+
+        let config = {
+            method: 'POST',
+            url: 'https://api.deepinfra.com/v1/openai/chat/completions',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+                'Accept': 'text/event-stream',
+                'Content-Type': 'application/json'
+            },
+            data: data,
+            responseType: 'stream'
+        };
+
+        const response = await axios.request(config);
+
+        let fullMessage = '';
+
+        response.data.on('data', (chunk) => {
+            const lines = chunk.toString().split('\n');
+            lines.forEach((line) => {
+                if (line.startsWith('data: ')) {
+                    try {
+                        let parsedData = JSON.parse(line.substring(6));
+                        let content = parsedData.choices[0]?.delta?.content || '';
+                        fullMessage += content;
+                    } catch (error) {
+                    }
+                }
+            });
+        });
+
+        response.data.on('end', () => {
+        const kupal = fullMessage.trim();
+        const output = _0vbn(kupal);
+            res.json({ model: "QwQ32b", author: "yazky", response: output });
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+});
+
+
+app.get("/ytdlv2", async (req, res) => {
+    try {
+        const { url } = req.query;
+
+        if (!url || (!url.startsWith("https://youtu.be") && !url.startsWith("https://www.youtube.com"))) {
+            return res.status(400).json({ error: "Please provide a valid YouTube link to download" });
+        }
+
+        let data = JSON.stringify({ query: url });
+        let config = {
+            method: "POST",
+            url: "https://mp3juice.at/api/yt-data",
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36",
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json",
+                "sec-ch-ua-platform": '"Android"',
+                "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+                dnt: "1",
+                "sec-ch-ua-mobile": "?1",
+                origin: "https://mp3juice.at",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-dest": "empty",
+                referer: "https://mp3juice.at/",
+                "accept-language": "en-US,en;q=0.9,vi;q=0.8,pt;q=0.7",
+                priority: "u=1, i",
+            },
+            data: data,
+        };
+
+        const response = await axios.request(config);
+        const originalData = response.data.items[0];
+        const id = originalData.id;
+
+        const responsegv = await axios.get("https://api.mp3youtube.cc/v2/sanity/key", {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36",
+                "sec-ch-ua-platform": '"Android"',
+                "sec-ch-ua": '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+                dnt: "1",
+                "content-type": "application/json",
+                "sec-ch-ua-mobile": "?1",
+                origin: "https://iframe.y2meta-uk.com",
+                "sec-fetch-site": "cross-site",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-dest": "empty",
+                referer: "https://iframe.y2meta-uk.com/",
+                "accept-language": "en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6",
+                priority: "u=1, i",
+            },
+        });
+
+        const key = responsegv.data.key;
+
+        const mp4Data = qs.stringify({
+            link: `https://youtu.be/${id}`,
+            format: "mp4",
+            audioBitrate: "128",
+            videoQuality: "360",
+            vCodec: "h264",
+        });
+
+        const responseMp4 = await axios.post("https://api.mp3youtube.cc/v2/converter", mp4Data, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "sec-ch-ua-platform": '"Android"',
+                "sec-ch-ua": '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+                "sec-ch-ua-mobile": "?1",
+                key: key,
+                dnt: "1",
+                origin: "https://iframe.y2meta-uk.com",
+                "sec-fetch-site": "cross-site",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-dest": "empty",
+                referer: "https://iframe.y2meta-uk.com/",
+                "accept-language": "en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6",
+                priority: "u=1, i",
+            },
+        });
+
+        const mp3Data = qs.stringify({
+            link: `https://youtu.be/${id}`,
+            format: "mp3",
+            audioBitrate: "128",
+            videoQuality: "360",
+            vCodec: "h264",
+        });
+
+        const responseMp3 = await axios.post("https://api.mp3youtube.cc/v2/converter", mp3Data, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "sec-ch-ua-platform": '"Android"',
+                "sec-ch-ua": '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+                "sec-ch-ua-mobile": "?1",
+                key: key,
+                dnt: "1",
+                origin: "https://iframe.y2meta-uk.com",
+                "sec-fetch-site": "cross-site",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-dest": "empty",
+                referer: "https://iframe.y2meta-uk.com/",
+                "accept-language": "en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6",
+                priority: "u=1, i",
+            },
+        });
+
+        res.json({
+            author: "yazky",
+            response: {
+                "360p": {
+                    title: responseMp4.data.filename || responseMp4.data.fileName,
+                    download_url: responseMp4.data.url,
+                },
+                "128kbps": {
+                    title: responseMp3.data.filename || responseMp3.data.fileName,
+                    download_url: responseMp3.data.url,
+                },
+            },
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+
+app.get("/brave", async (req, res) => {
+    const { search } = req.query;
+    if (!search) return res.status(400).json({ error: "Missing search query" });
+
+    const uuid = uuidv4();
+    const url = `https://search.brave.com/search?source=llmSuggest&summary=1&conversation=${uuid}&q=${encodeURIComponent(search)}`;
+
+    try {
+        const r = await axios.get(url);
+        const $ = cheerio.load(r.data);
+
+        const scriptContent = $('script').filter((i, el) => {
+            return $(el).html().includes('chatllm');
+        }).html();
+
+        const hashRegex = /results_hash\\?":\\"([a-f0-9]{64})/;
+        const hashMatch = scriptContent ? scriptContent.match(hashRegex) : null;
+
+        let resultsHash = null;
+        if (hashMatch && hashMatch[1]) {
+            resultsHash = hashMatch[1];
+        }
+
+        const conversationRegex = /conversation:\\?"([a-f0-9]+)\\?"/;
+        const conversationMatch = scriptContent ? scriptContent.match(conversationRegex) : null;
+
+        let conversationId = null;
+        if (conversationMatch && conversationMatch[1]) {
+            conversationId = conversationMatch[1];
+        }
+
+        const data = {
+            key: {
+                query: search,
+                country: "us",
+                language: "en",
+                safesearch: "moderate",
+                results_hash: resultsHash,
+                experimental_inline_refs: true
+            },
+            conversation: conversationId,
+            index: 2,
+            followup: search
+        };
+
+        const config = {
+            method: 'GET',
+            url: 'https://search.brave.com/api/chatllm/conversation',
+            params: data,
+            headers: {
+                'accept-language': 'en-US,en;q=0.9',
+                'content-type': 'application/json',
+                'priority': 'u=1, i',
+                'referer': `https://search.brave.com/search?q=${encodeURIComponent(search)}&source=llmSuggest&summary=1&conversation=${conversationId}`,
+                'sec-ch-ua': '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Windows"',
+                'sec-fetch-dest': 'empty',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-site': 'same-origin',
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36'
+            }
+        };
+
+        const chatResponse = await axios(config);
+let cleanedResponse = chatResponse.data;
+
+        if (typeof cleanedResponse === "string") {
+            try {
+                cleanedResponse = JSON.parse(cleanedResponse);
+            } catch (error) {
+                cleanedResponse = cleanedResponse
+                    .replace(/\"/g, "")
+                    .replace(/\n/g, "")
+                    .replace(/\\n\\n/g, "\n\n")
+                    .replace(/\\n/g, "\n").replace(/\{.*?\}/g, '')
+                    .trim();
+const shet = formatBoldText(cleanedResponse);
+                return res.json({ author: "yazky", response: shet });
+            }
+        }
+
+        res.json(shet);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+function _0kx(_0xkh) {
+  return _0xks[_0xkh] || _0xkh;
+}
+
+function _0xkc(_0khx) {
+  return _0khx.replace(/(#{2,4}\s*\*\*(.*?)\*\*)|(#{2,4}\s*(.*?)(?=\s|$))|\*\*(.*?)\*\*/g, 
+  (_0kh, hBold, hBoldText, hOnly, hOnlyText, boldOnlyText) => {
+    const text = hBoldText || hOnlyText || boldOnlyText;
+    return text.split('').map(_0kx).join('');
+  });
+}
+
+
+const gkh = (charCodes) => String.fromCharCode(...charCodes);
+const nhg = gkh(_l);
+
+app.get('/you', async (req, res) => {
+    const url = "https://you.com/api/streamingSearch";
+    const params = {
+        page: 1,
+        count: 10,
+        safeSearch: "Moderate",
+        mkt: "en-PH",
+        domain: "youchat",
+        q: req.query.chat
+    };
+    const headers = {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36",
+        "Cookie": "DS=eyJhbGciOiJSUzI1NiIsImtpZCI6IlNLMmpJbnU3SWpjMkp1eFJad1psWHBZRUpQQkFvIiwidHlwIjoiSldUIn0",
+        "Time-Zone": "+08:00"
+    };
+
+    try {
+        const response = await axios.get(url, { params, headers });
+
+        let tokens = [];
+        let relatedSearches = [];
+
+        response.data.split('\n').forEach(line => {
+            if (line.includes('"youChatToken"')) {
+                let match = line.match(/"youChatToken":\s*"([^"]+)"/);
+                if (match) tokens.push(match[1]);
+            } else if (line.includes('"relatedSearches"')) {
+                let match = line.match(/"relatedSearches":\s*(\[[^\]]+\])/);
+                if (match) relatedSearches = JSON.parse(match[1]);
+            }
+        });
+
+        const message = tokens
+            .join('')
+   .replace(/\\n\\n/g, '\n\n')
+  .replace(/\\n/g, '\n') 
+            .replace(/\\u[\dA-Fa-f]{4}/g, chr => String.fromCharCode(parseInt(chr.replace('\\u', ''), 16)))           
+            .trim();
+
+        res.json({
+            author: nhg,
+            response: _0xkc(message),
+    /**     relatedSearch: relatedSearches **/
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+});
+        
+        app.use((req, res, next) => {
   try {
 res.status(404).sendFile(path.join(__dirname, "cliff", "404.html"));
   } catch (error) {
