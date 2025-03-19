@@ -1,5 +1,6 @@
 const express = require("express");
 const router = require("./api");
+const zlib = require('zlib');
 const path = require("path");
 const { SoundCloud } = require('scdl-core');
 const DIG = require('discord-image-generation');
@@ -13747,6 +13748,145 @@ app.get('/onion', async (req, res) => {
     }
 });
 
+
+const urls = {
+  "Facebook": "http://facebook.com",
+  "YouTube": "http://youtube.com",
+  "Spankbang": "http://spankbang.com",
+  "XNXX": "http://xnxx.com",
+  "ViewLift": "http://viewlift.com",
+  "XVideos": "http://xvideos.com",
+  "XHamster": "http://xhamster.com",
+  "Eporner.com": "http://eporner.com",
+  "4Tube": "http://4tube.com",
+  "ABC.net.au": "http://abc.net.au",
+  "ABCnews": "http://abcnews.com",
+  "Beeg": "http://beeg.com",
+  "CNN": "http://cnn.com",
+  "Digg": "http://digg.com",
+  "ExtremeTube": "http://extremetube.com",
+  "KeezMovies": "http://keezmovies.com",
+  "Mofosex": "http://mofosex.com",
+  "MovieFap": "http://moviefap.com",
+  "PornTube": "http://porntube.com",
+  "SlutLoad": "http://slutload.com",
+  "SunPorno": "http://sunporno.com",
+  "TNAFlix": "http://tnaflix.com",
+  "Tube8": "http://tube8.com",
+  "Twitter": "http://twitter.com",
+  "AdobeTV": "http://adobe.com",
+  "Cliphunter": "http://cliphunter.com",
+  "FourTube": "http://4tube.com",
+  "Brightcove": "http://brightcove.com",
+  "Bandcamp": "http://bandcamp.com",
+  "BBC": "http://bbc.com",
+  "CamModels": "http://cammodels.com",
+  "CamTube": "http://camtube.co",
+  "Kaltura": "http://kaltura.com",
+  "Chaturbate": "http://chaturbate.com",
+  "Disney": "http://disney.com",
+  "EMPFlix": "http://empflix.com",
+  "ESPN": "http://espn.com",
+  "Imgur": "http://imgur.com",
+  "Instagram": "http://instagram.com",
+  "LoveHomePorn": "http://lovehomeporn.com",
+  "Lynda": "http://lynda.com",
+  "Metacafe": "http://metacafe.com",
+  "MSN": "http://msn.com",
+  "NickDe": "http://nick.de",
+  "PornCom": "http://porn.com",
+  "PornHD": "http://pornhd.com",
+  "PornHub": "http://pornhub.com",
+  "Pornotube": "http://pornotube.com",
+  "RedTube": "http://redtube.com",
+  "Steam": "http://steam.com",
+  "TED": "http://ted.com",
+  "Twitch": "http://twitch.com",
+  "Vevo": "http://vevo.com",
+  "Vimeo": "http://vimeo.com",
+  "Vine": "http://vine.com",
+  "Dailymotion": "http://dailymotion.com",
+  "VK": "http://vk.com",
+  "XTube": "http://xtube.com",
+  "XXXYMovies": "http://xxxymovies.com",
+  "YouJizz": "http://youjizz.com",
+  "YouPorn": "http://youporn.com",
+  "YourPorn": "http://yourporn.com"
+};
+
+app.get('/genfrom-dl', async (req, res) => {
+    try {
+        const videoUrl = req.query.url;
+        if (!videoUrl) {
+            return res.status(400).json({
+                 author: "yazky",
+                 error: "Please provide a video url first",
+                 𝗌𝗎𝗉𝗉𝗈𝗋𝗍𝖾𝖽𝖲𝗂𝗍𝖾𝗌: urls
+              });
+        }
+
+
+        const processUrl = `https://www.genfrom.com/process.php?u=${encodeURIComponent(videoUrl)}`;
+
+        const response = await axios.get(processUrl, { responseType: 'arraybuffer' });
+        const encoding = response.headers['content-encoding'];
+        let html;
+
+        if (encoding === 'br') {
+            html = zlib.brotliDecompressSync(response.data).toString('utf-8');
+        } else if (encoding === 'gzip') {
+            html = zlib.gunzipSync(response.data).toString('utf-8');
+        } else if (encoding === 'deflate') {
+            html = zlib.inflateSync(response.data).toString('utf-8');
+        } else {
+            html = response.data.toString('utf-8');
+        }
+
+        // Parse HTML to extract script content
+        const $ = cheerio.load(html);
+        const scriptContent = $('script').map((i, el) => $(el).html()).get().find(content => content.includes('var u ='));
+
+        if (!scriptContent) {
+            return res.status(500).json({ error: "Failed to extract video parameters" });
+        }
+
+        const u = scriptContent.match(/var u\s*=\s*'([^']+)'/)?.[1];
+        const s = scriptContent.match(/var s\s*=\s*'([^']+)'/)?.[1];
+        const h = scriptContent.match(/var h\s*=\s*'([^']+)'/)?.[1];
+
+        if (!u || !s || !h) {
+            return res.status(500).json({ error: "Failed to retrieve video parameters" });
+        }
+
+        const apiUrl = `https://www.genfrom.com/apiProcess.php?q=${u}&s=${s}&h=${h}`;
+        const config = {
+            method: 'GET',
+            url: apiUrl,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36',
+                'sec-ch-ua-platform': '"Android"',
+                'x-requested-with': 'XMLHttpRequest',
+                'sec-ch-ua': '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
+                'dnt': '1',
+                'sec-ch-ua-mobile': '?1',
+                'sec-fetch-site': 'same-origin',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-dest': 'empty',
+                'accept-language': 'en-US,en;q=0.9,vi;q=0.8,pt;q=0.7,fr;q=0.6',
+                'priority': 'u=1, i'
+            }
+        };
+
+        const js = await axios.request(config);
+        res.json({
+            author: "yazky",
+            data: js.data
+        });
+
+    } catch (error) {
+        res.status(500).json({ error: error});
+    }
+});
 
 
 
