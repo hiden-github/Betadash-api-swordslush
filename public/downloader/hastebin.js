@@ -12,14 +12,14 @@ const end = ["js", "php", "csharp", "css", "js", "kotlin", "htm"];
   const randomIndex = Math.floor(Math.random() * end.length);
     const tae = end[randomIndex];
 
-    const url = 'https://hastebin.skyra.pw/documents';
+    const url = 'https://paste.code-solutions.dev/documents';
     const headers = {
-        'authority': 'hastebin.skyra.pw',
+        'authority': 'paste.code-solutions.dev',
         'accept': 'application/json',
         'accept-language': 'en-US,en;q=0.9',
         'content-type': 'text/plain',
-        'origin': 'https://hastebin.skyra.pw',
-        'referer': 'https://hastebin.skyra.pw/',
+        'origin': 'https://paste.code-solutions.dev',
+        'referer': 'https://paste.code-solutions.dev/',
         'sec-ch-ua': '"Not-A.Brand";v="99", "Chromium";v="124"',
         'sec-ch-ua-mobile': '?1',
         'sec-ch-ua-platform': '"Android"',
@@ -38,8 +38,8 @@ const end = ["js", "php", "csharp", "css", "js", "kotlin", "htm"];
                 status: "200",
                 message: 'Document uploaded successfully',
                 author: 'cliff',
-                skyra: `https://hastebin.skyra.pw/${documentKey}.${tae}`,
-                raw: `https://hastebin.skyra.pw/raw/${documentKey}.${tae}`,
+                skyra: `https://paste.code-solutions.dev/${documentKey}.${tae}`,
+                raw: `https://paste.code-solutions.dev/raw/${documentKey}.${tae}`,
             };
             res.status(200).json(documentUrls);
         } else {
@@ -49,4 +49,5 @@ const end = ["js", "php", "csharp", "css", "js", "kotlin", "htm"];
         res.status(500).json({ message: 'skills issue Error uploading the document', error: error.message });
     }
 };
+
 
